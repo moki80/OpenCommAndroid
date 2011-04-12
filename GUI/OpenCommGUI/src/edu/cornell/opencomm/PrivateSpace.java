@@ -1,4 +1,4 @@
-package opencomm.android_1;
+package edu.cornell.opencomm;
 
 /** Hold information about private space:
  * 

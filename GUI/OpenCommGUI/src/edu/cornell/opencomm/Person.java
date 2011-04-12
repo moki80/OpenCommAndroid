@@ -1,4 +1,4 @@
-package opencomm.android_1;
+package edu.cornell.opencomm;
 
 
 /** Should hold information about a person and their icon: is a MODEL class
