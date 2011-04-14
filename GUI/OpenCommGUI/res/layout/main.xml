@@ -6,11 +6,11 @@
     android:layout_height="fill_parent"
     android:weightSum="25"
     >
-	<TextView  
+	<edu.cornell.opencomm.ScreenView android:id="@+id/space_view"  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="@string/hello"
     android:layout_weight="24"
+    android:background="@color/main_background"
     />
     <LinearLayout android:background="@color/gray"
     android:orientation="horizontal"
@@ -32,40 +32,43 @@
 	    		android:layout_height="fill_parent"
 	    		android:layout_weight="3"
 	    		android:measureAllChildren="false"
-	    		android:background="@color/red"  >
+	    		android:background="@color/scroll_background"  >
     		<LinearLayout android:id="@+id/privateSpaceLinearLayout"
     			
 	    		android:layout_width="wrap_content"
 	    		android:layout_height="fill_parent"
-	    		
     			android:gravity="center" >
     			
-    			<ImageButton android:id="@+id/red_space"
-    				android:src="@drawable/red_normal"
+    			<edu.cornell.opencomm.PrivateSpace android:id="@+id/red_space"
+    				android:minWidth="50px"
     				android:layout_width="wrap_content"
     				android:layout_height="wrap_content"/>
-    			<ImageButton android:id="@+id/green_space"
-    				android:src="@drawable/red_normal"
+    			<edu.cornell.opencomm.PrivateSpace android:id="@+id/red_space"
+    				android:minWidth="50px"
     				android:layout_width="wrap_content"
     				android:layout_height="wrap_content"/>
-    			<ImageButton android:id="@+id/blue_space"
-    				android:src="@drawable/red_normal"
+    			<edu.cornell.opencomm.PrivateSpace android:id="@+id/red_space"
+    				android:minWidth="50px"
     				android:layout_width="wrap_content"
     				android:layout_height="wrap_content"/>
-    			<ImageButton android:id="@+id/red_space"
-    				android:src="@drawable/red_normal"
+    			<edu.cornell.opencomm.PrivateSpace android:id="@+id/red_space"
+    				android:minWidth="50px"
     				android:layout_width="wrap_content"
     				android:layout_height="wrap_content"/>
-    			<ImageButton android:id="@+id/red_space"
-    				android:src="@drawable/red_normal"
+    			<edu.cornell.opencomm.PrivateSpace android:id="@+id/red_space"
+    				android:minWidth="50px"
     				android:layout_width="wrap_content"
     				android:layout_height="wrap_content"/>
-    			<ImageButton android:id="@+id/red_space"
-    				android:src="@drawable/red_normal"
+    			<edu.cornell.opencomm.PrivateSpace android:id="@+id/red_space"
+    				android:minWidth="50px"
     				android:layout_width="wrap_content"
     				android:layout_height="wrap_content"/>
-    			<ImageButton android:id="@+id/red_space"
-    				android:src="@drawable/red_normal"
+    			<edu.cornell.opencomm.PrivateSpace android:id="@+id/red_space"
+    				android:minWidth="50px"
+    				android:layout_width="wrap_content"
+    				android:layout_height="wrap_content"/>
+    			<edu.cornell.opencomm.PrivateSpace android:id="@+id/red_space"
+    				android:minWidth="50px"
     				android:layout_width="wrap_content"
     				android:layout_height="wrap_content"/>
     			

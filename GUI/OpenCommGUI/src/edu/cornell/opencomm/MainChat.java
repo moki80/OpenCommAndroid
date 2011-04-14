@@ -1,9 +1,11 @@
 package edu.cornell.opencomm;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.util.Log;
 
 /** The main chat screen with EVERYBODY'S icon in it 
  * 
@@ -16,7 +18,8 @@ import android.widget.ScrollView;
 
 public class MainChat extends Activity {
     /** Called when the activity is first created. */
-	private LinearLayout root;
+	private ScreenView root;
+	private MainSpace space;
 	
     @Override
     /** Initialize all views (buttons, bars, etc.) and set OnClickListeners for necessary components
@@ -24,47 +27,23 @@ public class MainChat extends Activity {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        // example of how to set View leaves using code (not XML) as described in book, can erase if necessary
-//        
-//        // can set up parameters
-//        LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams(
-//        		ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.0f);
-//        
-//        LinearLayout.LayoutParams widgetParams = new LinearLayout.LayoutParams(
-//        		ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT, 1.0f);
-//        
-//        // root is always the first node
-//        root = new LinearLayout(this);
-//        root.setOrientation(LinearLayout.VERTICAL);
-//        root.setBackgroundColor(Color.LTGRAY);
-//        root.setLayoutParams(containerParams);
-//        
-//        // root's leaf
-//        LinearLayout ll = new LinearLayout(this);
-//        ll.setOrientation(LinearLayout.HORIZONTAL);
-//        ll.setBackgroundColor(Color.GRAY);
-//        ll.setLayoutParams(containerParams);
-//        root.addView(ll);
-//        
-//        // leaf's leaf
-//        Button b = new Button(this);
-//        b.setText("Menu");
-//        b.setTextColor(Color.RED);
-//        b.setLayoutParams(widgetParams);
-//        ll.addView(b);
-        
-        setContentView(R.layout.main);
-        
-//        // can add on click listeners and specify own methods within it
-//        b.setOnClickListener(
-//        		new Button.OnClickListener(){
-//        			public void onClick(View v){
-//        				// blahblah
-//        			}
-//        			// add more methods here if you want
-//        			});
-//        			
+        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(){
 
+			public void uncaughtException(Thread thread, Throwable ex) {
+				Log.e("TAG_STRING", "Uncaught Exception Caught", ex);
+			}
         
+        });
+        setContentView(R.layout.main);
+
+        // Create a space with everyone in it (the main space)
+        space = new MainSpace(this);
+        space.initializeEveryone(); // add everyone to it!
+        
+        root = (ScreenView) findViewById(R.id.space_view);
+        root.setSpace(space);
+        root.invalidate();
+//        root = new ScreenView(this, space);
+//        setContentView(root);
     }
 }
