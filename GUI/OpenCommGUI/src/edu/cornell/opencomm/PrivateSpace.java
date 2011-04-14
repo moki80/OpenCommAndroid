@@ -35,12 +35,12 @@ public class PrivateSpace extends ImageButton {
 	 */
 	public static int privateSpaceCounter = 0;
 	
-	private LinkedList<Person> peopleInSpace = new LinkedList<Person>();
+	protected LinkedList<Person> peopleInSpace = new LinkedList<Person>();
 
 	private int spaceId = -1;
 	private int color = Color.BLUE;
 	
-	private boolean isSelected = false;
+	protected boolean isSelected = false;
 	
 	public PrivateSpace(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -60,11 +60,11 @@ public class PrivateSpace extends ImageButton {
 	/**
 	 * Initialize the object's spaceId, color, and add it to the list of all spaces
 	 */
-	private synchronized void init(){
+	private final synchronized void init(){
 		this.spaceId = PrivateSpace.privateSpaceCounter++;
 		this.color = PrivateSpace.COLORS[spaceId%PrivateSpace.COLORS.length];
 		this.setOnClickListener(new OnClickListener(){
-			@Override
+			
 			public void onClick(View arg0) {
 				clicked(arg0);
 			}			

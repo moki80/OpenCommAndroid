@@ -1,17 +1,32 @@
 package edu.cornell.opencomm;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
-/** Should hold information about a person and their icon: is a MODEL class
- * 1)name
- * 2)icon picture
- * 3)description
- * 4)icon dimensions
- * 5)
- * 
- * 
- * @author noranq
- *
- */
 public class Person {
-
+	private String name;
+	private String description;
+	private int image; // R.drawable int
+	
+	public Person(String name, String description, int image){
+		this.name = name;
+		this.description = description;
+		this.image = image;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public String getDescription(){
+		return description;
+	}
+	
+	public int getImage(){
+		return image;
+	}
+	
+	public void setImage(int image){
+		this.image = image;
+	}
 }

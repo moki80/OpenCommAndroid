@@ -6,11 +6,11 @@
     android:layout_height="fill_parent"
     android:weightSum="25"
     >
-	<TextView  
+	<edu.cornell.opencomm.ScreenView android:id="@+id/space_view"  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="@string/hello"
     android:layout_weight="24"
+    android:background="@color/main_background"
     />
     <LinearLayout android:background="@color/gray"
     android:orientation="horizontal"
