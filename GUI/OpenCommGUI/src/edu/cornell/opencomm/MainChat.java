@@ -24,47 +24,7 @@ public class MainChat extends Activity {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        // example of how to set View leaves using code (not XML) as described in book, can erase if necessary
-//        
-//        // can set up parameters
-//        LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams(
-//        		ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.0f);
-//        
-//        LinearLayout.LayoutParams widgetParams = new LinearLayout.LayoutParams(
-//        		ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT, 1.0f);
-//        
-//        // root is always the first node
-//        root = new LinearLayout(this);
-//        root.setOrientation(LinearLayout.VERTICAL);
-//        root.setBackgroundColor(Color.LTGRAY);
-//        root.setLayoutParams(containerParams);
-//        
-//        // root's leaf
-//        LinearLayout ll = new LinearLayout(this);
-//        ll.setOrientation(LinearLayout.HORIZONTAL);
-//        ll.setBackgroundColor(Color.GRAY);
-//        ll.setLayoutParams(containerParams);
-//        root.addView(ll);
-//        
-//        // leaf's leaf
-//        Button b = new Button(this);
-//        b.setText("Menu");
-//        b.setTextColor(Color.RED);
-//        b.setLayoutParams(widgetParams);
-//        ll.addView(b);
         
         setContentView(R.layout.main);
-        
-//        // can add on click listeners and specify own methods within it
-//        b.setOnClickListener(
-//        		new Button.OnClickListener(){
-//        			public void onClick(View v){
-//        				// blahblah
-//        			}
-//        			// add more methods here if you want
-//        			});
-//        			
-
-        
     }
 }
