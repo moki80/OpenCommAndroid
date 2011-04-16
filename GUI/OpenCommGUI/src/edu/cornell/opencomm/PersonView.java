@@ -46,6 +46,9 @@ public class PersonView {
 	public void setY(int y){
 		this.y=y;
 	}
+	public Person getPerson(){
+		return this.person;
+	}
 	
 	public boolean clickedInside(int mouseX, int mouseY){
 		if((mouseX>=x) && (mouseX<=(x+w)) && (mouseY>=y) && (mouseY<=(y+h)))

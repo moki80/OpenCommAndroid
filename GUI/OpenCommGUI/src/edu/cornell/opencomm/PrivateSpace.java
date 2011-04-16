@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -72,28 +71,29 @@ public class PrivateSpace extends ImageButton {
 				clicked(arg0);
 			}			
 		}); */
+		View v = null;
 		
 		// Nora adding this
 		
-		this.setOnTouchListener( new View.OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View view, MotionEvent evt) {
-				switch(evt.getAction()){
-				case MotionEvent.ACTION_DOWN:
-					
-					break;
-				case MotionEvent.ACTION_MOVE:
-					//clicked(view);
-					break;
-				case MotionEvent.ACTION_UP:
-					clicked(view);
-					break;
-				}
-				// TODO Auto-generated method stub
-				return false;
-			}
-		});
+//		this.setOnTouchListener( new View.OnTouchListener() {
+//			
+//			public boolean onTouch(View view, MotionEvent evt) {
+//				switch(evt.getAction()){
+//				case MotionEvent.ACTION_DOWN:
+//					clicked(view);
+//					break;
+//				case MotionEvent.ACTION_MOVE:
+//					//clicked(view);
+//					break;
+//				case MotionEvent.ACTION_UP:
+//					clicked(view);
+//					break;
+//				}
+//				
+//				// TODO Auto-generated method stub
+//				return false;
+//			}
+//		});
 		
 		
 		
@@ -114,6 +114,7 @@ public class PrivateSpace extends ImageButton {
 				p.isSelected = false;
 			}
 		}
+		this.invalidate();
 	}
 
 	@Override
@@ -145,6 +146,7 @@ public class PrivateSpace extends ImageButton {
 	 * @param p
 	 */
 	public void add(Person p){
+		this.clicked(this);
 		if (!this.peopleInSpace.contains(p)){
 			this.peopleInSpace.add(p);
 		}
@@ -201,6 +203,20 @@ public class PrivateSpace extends ImageButton {
 	
 	public void setHovered(boolean isHovered){
 		this.isHovered = isHovered;
+	}
+
+	/**
+	 * Returns true if the coordinates given are within this view
+	 * @param y
+	 * @param x
+	 * @return
+	 */
+	public boolean contains(int x, int y) {
+		int[] location = new int[2];
+		this.getLocationOnScreen(location);
+		if (!this.isShown()) return false;
+		return (x > location[0]  && x < location[0] + this.getWidth()
+				&& y > location[1] - this.getHeight() && y < location[1] + this.getHeight());
 	}
 	
 	// Nora experimenting

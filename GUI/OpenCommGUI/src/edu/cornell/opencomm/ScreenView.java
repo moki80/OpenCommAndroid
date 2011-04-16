@@ -105,6 +105,14 @@ public class ScreenView extends LinearLayout {
 				break;
 			case MotionEvent.ACTION_UP:
 				if(selectedIcon!=null){
+					for (PrivateSpace p : PrivateSpace.currentSpaces){
+						if (p.contains(mouseX,mouseY)){
+							p.add(selectedIcon.getPerson());
+							break;
+//							return true;
+						}
+					}
+					//Draw in bounds
 					if(mouseY>=mainScreenH && mouseY<=h){
 						selectedIcon.setX(initialX);
 						selectedIcon.setY(initialY);
