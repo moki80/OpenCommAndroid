@@ -33,6 +33,9 @@ public class ScreenView extends LinearLayout {
 	private LinkedList<PersonView> icons;
 	int x =0, y=0, w=320, h = 430;
 	private PersonView selectedIcon;
+	int initialX=0, initialY=0; // position of the icon before you moved it
+	// NORA - I guestimated the mainScreenH and adjusted it, we might need a better method for this
+	int mainScreenH = 340; // the height of the main screen (the whole screen height - bar height)
 	
 	
 	
@@ -51,7 +54,7 @@ public class ScreenView extends LinearLayout {
 		while(i.hasNext()){
 			Person p = i.next();
 			icons.add(new PersonView(context, p, (int)(Math.floor(w*Math.random())), 
-					(int)(Math.floor(h*Math.random())), 50, 50));
+					(int)(Math.floor(mainScreenH*Math.random())), 50, 50));
 			i=people.listIterator(i.nextIndex());
 		}
 		
@@ -73,14 +76,18 @@ public class ScreenView extends LinearLayout {
 		int mouseX = (int)event.getX();
 		int mouseY = (int)event.getY();
 		
+		
 		switch(eventaction){
 			case MotionEvent.ACTION_DOWN:
 				selectedIcon=null;
 				ListIterator<PersonView> i= icons.listIterator();
 				while(i.hasNext() == true){
 					PersonView icon = i.next();
-					if(icon.clickedInside(mouseX, mouseY))
+					if(icon.clickedInside(mouseX, mouseY)){
 						selectedIcon = icon;
+						initialX = icon.getX();
+						initialY = icon.getY();
+					}
 					i= icons.listIterator(i.nextIndex());
 				}
 				break;
@@ -88,10 +95,22 @@ public class ScreenView extends LinearLayout {
 				if(selectedIcon!=null){
 					selectedIcon.setX(mouseX-(selectedIcon.getW()/2));
 					selectedIcon.setY(mouseY-(selectedIcon.getH()/2));
+					// Nora experimenting
+				/*	for(PrivateSpace p : PrivateSpace.currentSpaces){
+						//int x = p.getLeft();
+						if(mouseX>=p.getLeft() && mouseX<=p.getRight() && mouseY>=p.getTop() && mouseY<=p.getBottom())
+							p.clicked2(p);
+					} */
 				}
 				break;
 			case MotionEvent.ACTION_UP:
-				selectedIcon = null;
+				if(selectedIcon!=null){
+					if(mouseY>=mainScreenH && mouseY<=h){
+						selectedIcon.setX(initialX);
+						selectedIcon.setY(initialY);
+					}
+					selectedIcon = null;
+				}
 				break;
 		}  
 		invalidate();

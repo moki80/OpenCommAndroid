@@ -24,11 +24,11 @@ public final class R {
         public static final int risa=0x7f020004;
     }
     public static final class id {
-        public static final int main_button=0x7f060004;
-        public static final int menu_button=0x7f060001;
+        public static final int main_button=0x7f060001;
         public static final int privateSpaceLinearLayout=0x7f060002;
         public static final int red_space=0x7f060003;
         public static final int space_view=0x7f060000;
+        public static final int trash_button=0x7f060004;
     }
     public static final class layout {
         public static final int main=0x7f030000;
@@ -37,6 +37,6 @@ public final class R {
         public static final int app_name=0x7f050003;
         public static final int hello=0x7f050000;
         public static final int main_button_text=0x7f050002;
-        public static final int menu_button_text=0x7f050001;
+        public static final int trash_button_text=0x7f050001;
     }
 }

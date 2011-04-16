@@ -19,9 +19,9 @@
     android:layout_weight="1"
     android:layout_gravity="center"
     >
-    	<Button android:id="@+id/menu_button"
+    	<Button android:id="@+id/main_button"
     		android:padding="5dip"
-    		android:text="@string/menu_button_text"
+    		android:text="@string/main_button_text"
     		android:layout_width="wrap_content"
     		android:layout_height="fill_parent" 
     		android:layout_weight="1"
@@ -74,10 +74,10 @@
     			
     		</LinearLayout>
     		</HorizontalScrollView>
-    	<Button android:id="@+id/main_button"
+    	<Button android:id="@+id/trash_button"
     		android:paddingLeft="5dip"
     		android:paddingRight="5dip"
-    		android:text="@string/main_button_text"
+    		android:text="@string/trash_button_text"
     		android:layout_width="wrap_content"
     		android:layout_height="fill_parent" 
     		android:layout_weight="1"

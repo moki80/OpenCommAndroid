@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -41,6 +42,8 @@ public class PrivateSpace extends ImageButton {
 	private int color = Color.BLUE;
 	
 	protected boolean isSelected = false;
+	protected boolean isHovered = false;
+	public View.OnTouchListener ontouchlistener;
 	
 	public PrivateSpace(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -63,12 +66,37 @@ public class PrivateSpace extends ImageButton {
 	private final synchronized void init(){
 		this.spaceId = PrivateSpace.privateSpaceCounter++;
 		this.color = PrivateSpace.COLORS[spaceId%PrivateSpace.COLORS.length];
-		this.setOnClickListener(new OnClickListener(){
+		/*this.setOnClickListener(new OnClickListener(){
 			
 			public void onClick(View arg0) {
 				clicked(arg0);
 			}			
+		}); */
+		
+		// Nora adding this
+		
+		this.setOnTouchListener( new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View view, MotionEvent evt) {
+				switch(evt.getAction()){
+				case MotionEvent.ACTION_DOWN:
+					
+					break;
+				case MotionEvent.ACTION_MOVE:
+					//clicked(view);
+					break;
+				case MotionEvent.ACTION_UP:
+					clicked(view);
+					break;
+				}
+				// TODO Auto-generated method stub
+				return false;
+			}
 		});
+		
+		
+		
 		PrivateSpace.currentSpaces.add(this);
 	}
 
@@ -104,7 +132,7 @@ public class PrivateSpace extends ImageButton {
 		canvas.drawColor(backgroundColor);
 		normalShape.draw(canvas);
 		RectShape rect2 = new RectShape();
-		if (!this.isSelected){
+		if (!this.isSelected && !this.isHovered){
 			ShapeDrawable s = new ShapeDrawable(rect2);
 			s.getPaint().setColor(backgroundColor);
 			s.setBounds(6, 6, this.getHeight() - 4, this.getHeight() - 6);
@@ -165,4 +193,26 @@ public class PrivateSpace extends ImageButton {
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
+	
+	// Nora added isHovered, will work with it more
+	public boolean isHovered(){
+		return isHovered;
+	}
+	
+	public void setHovered(boolean isHovered){
+		this.isHovered = isHovered;
+	}
+	
+	// Nora experimenting
+	/*
+	public void clicked2(View view) {
+		this.isSelected = !isSelected;
+		if (isSelected){ //make all others not selected
+			for(PrivateSpace p : PrivateSpace.currentSpaces){
+				if(p.equals(this)) continue;
+				
+				p.isSelected = false;
+			}
+		}
+	} */
 }
