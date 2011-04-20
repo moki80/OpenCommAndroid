@@ -73,7 +73,7 @@ public class MainChat extends Activity {
 		}); 
      // set listener to trash button
         Button trashButton = (Button)findViewById(R.id.trash_button);
-        mainButton.setOnTouchListener( new View.OnTouchListener() {
+         trashButton.setOnTouchListener( new View.OnTouchListener() {
 			public boolean onTouch(View view, MotionEvent evt) {
 				switch(evt.getAction()){
 				case MotionEvent.ACTION_DOWN:		
@@ -82,18 +82,17 @@ public class MainChat extends Activity {
 					break;
 				case MotionEvent.ACTION_UP:
 					for(PrivateSpace p: PrivateSpace.currentSpaces){
-						if(p.isSelected())
-							PrivateSpace.currentSpaces.remove(p);
-					} 
+					   if(p.isSelected())
+							removePrivateSpace(p);
+					}  
 					break;
 				}
-				view.invalidate();
 				return false;
 			}
-		}); 
+		});  
     }
     
-    // create a new private space, that you can add to the xml file
+    // add a new private space, that you can add to the xml file
     public PrivateSpace createNewPrivateSpace(){
     	 LinearLayout bottomBar = (LinearLayout)findViewById(R.id.privateSpaceLinearLayout);
          PrivateSpace p = new PrivateSpace(this);
@@ -102,6 +101,14 @@ public class MainChat extends Activity {
          bottomBar.addView(p);  
          bottomBar.invalidate();
          return p;
+    }
+    
+    // remove a private space button from the screen
+    public void removePrivateSpace(PrivateSpace p){
+    	LinearLayout bottomBar = (LinearLayout)findViewById(R.id.privateSpaceLinearLayout);
+    	bottomBar.removeView(p);
+    	bottomBar.invalidate();
+    	PrivateSpace.currentSpaces.remove(p);
     }
     
 

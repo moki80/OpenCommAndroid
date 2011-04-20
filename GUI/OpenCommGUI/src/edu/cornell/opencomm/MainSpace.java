@@ -71,6 +71,10 @@ class MainSpace extends PrivateSpace {
 		p3.add(najla);
 		p3.add(risa);
 		p3.add(nora);
+		
+		/*m.removePrivateSpace(p3);
+		m.removePrivateSpace(p2);
+		m.removePrivateSpace(p1); */
 	}
 
 	@Override
