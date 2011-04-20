@@ -64,17 +64,13 @@ class MainSpace extends PrivateSpace {
 		MainChat m = (MainChat)context;
 		PrivateSpace p1 = m.createNewPrivateSpace();
 		p1.add(makoto);
-		PrivateSpace p2 = m.createNewPrivateSpace();
+	/*	PrivateSpace p2 = m.createNewPrivateSpace();
 		p2.add(najla);
 		p2.add(risa);
 		PrivateSpace p3 = m.createNewPrivateSpace();
 		p3.add(najla);
 		p3.add(risa);
-		p3.add(nora);
-		
-		/*m.removePrivateSpace(p3);
-		m.removePrivateSpace(p2);
-		m.removePrivateSpace(p1); */
+		p3.add(nora); */
 	}
 
 	@Override

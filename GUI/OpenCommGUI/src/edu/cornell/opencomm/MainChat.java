@@ -66,6 +66,7 @@ public class MainChat extends Activity {
 				case MotionEvent.ACTION_MOVE:
 					break;
 				case MotionEvent.ACTION_UP:
+					createNewPrivateSpace();
 					break;
 				}
 				return false;
@@ -109,6 +110,7 @@ public class MainChat extends Activity {
     	bottomBar.removeView(p);
     	bottomBar.invalidate();
     	PrivateSpace.currentSpaces.remove(p);
+    	PrivateSpace.privateSpaceCounter--;
     }
     
 
