@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -36,7 +37,7 @@ public class PrivateSpace extends ImageButton {
 	private int color = Color.BLUE;
 
 	protected boolean isSelected = false;
-	protected boolean isHovered = false;
+	//protected boolean isHovered = false;
 	public View.OnTouchListener ontouchlistener;
 
 	public PrivateSpace(Context context, AttributeSet attrs, int defStyle) {
@@ -61,35 +62,27 @@ public class PrivateSpace extends ImageButton {
 	private final synchronized void init() {
 		this.spaceId = PrivateSpace.privateSpaceCounter++;
 		this.color = PrivateSpace.COLORS[spaceId % PrivateSpace.COLORS.length];
-		/*
-		 * this.setOnClickListener(new OnClickListener(){
-		 * 
-		 * public void onClick(View arg0) { clicked(arg0); } });
-		 */
+		
+
+		 
+		  this.setOnTouchListener( new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View view, MotionEvent evt) {
+				switch(evt.getAction()){
+				case MotionEvent.ACTION_DOWN:		
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					toggle(view);
+					break;
+				}
+				return false;
+			}
+		});
+
 		View v = null;
-
-		// Nora adding this
-
-		// this.setOnTouchListener( new View.OnTouchListener() {
-		//			
-		// public boolean onTouch(View view, MotionEvent evt) {
-		// switch(evt.getAction()){
-		// case MotionEvent.ACTION_DOWN:
-		// clicked(view);
-		// break;
-		// case MotionEvent.ACTION_MOVE:
-		// //clicked(view);
-		// break;
-		// case MotionEvent.ACTION_UP:
-		// clicked(view);
-		// break;
-		// }
-		//				
-		// // TODO Auto-generated method stub
-		// return false;
-		// }
-		// });
-
 		PrivateSpace.currentSpaces.add(this);
 	}
 
@@ -129,7 +122,7 @@ public class PrivateSpace extends ImageButton {
 		canvas.drawColor(backgroundColor);
 		normalShape.draw(canvas);
 		RectShape rect2 = new RectShape();
-		if (!this.isSelected && !this.isHovered) {
+		if (!this.isSelected) {
 			ShapeDrawable s = new ShapeDrawable(rect2);
 			s.getPaint().setColor(backgroundColor);
 			s.setBounds(6, 6, this.getHeight() - 4, this.getHeight() - 6);
@@ -199,9 +192,9 @@ public class PrivateSpace extends ImageButton {
 	}
 
 	// Nora added isHovered, will work with it more
-	public boolean isHovered() {
+/*	public boolean isHovered() {
 		return isHovered;
-	}
+	}*/
 
 	// If you hover over an Private Space icon with your person icon, then only
 	// highlight this icon and turn off everybody else's

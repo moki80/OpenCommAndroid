@@ -6,6 +6,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 
 /** The main chat screen with EVERYBODY'S icon in it 
  * 
@@ -43,7 +46,41 @@ public class MainChat extends Activity {
         root = (ScreenView) findViewById(R.id.space_view);
         root.setSpace(space);
         root.invalidate();
-//        root = new ScreenView(this, space);
-//        setContentView(root);
+        
+     // set listener to main button
+        Button mainButton = (Button)findViewById(R.id.main_button);
+        mainButton.setOnTouchListener( new View.OnTouchListener() {
+			public boolean onTouch(View view, MotionEvent evt) {
+				switch(evt.getAction()){
+				case MotionEvent.ACTION_DOWN:		
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+				}
+				return false;
+			}
+		}); 
+     // set listener to trash button
+        Button trashButton = (Button)findViewById(R.id.trash_button);
+        mainButton.setOnTouchListener( new View.OnTouchListener() {
+			public boolean onTouch(View view, MotionEvent evt) {
+				switch(evt.getAction()){
+				case MotionEvent.ACTION_DOWN:		
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					for(PrivateSpace p: PrivateSpace.currentSpaces){
+						if(p.isSelected())
+							PrivateSpace.currentSpaces.remove(p);
+					}
+					break;
+				}
+				view.invalidate();
+				return false;
+			}
+		}); 
     }
 }

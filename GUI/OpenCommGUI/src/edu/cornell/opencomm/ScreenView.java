@@ -24,8 +24,6 @@ public class ScreenView extends LinearLayout {
 		this.space = space;
 		setFocusable(true);
 		setFocusableInTouchMode(true);	
-		
-//		createIcons(space);
 	}
 
 	private Context context;
