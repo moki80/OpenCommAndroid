@@ -51,12 +51,6 @@ public class MainChat extends Activity {
         
         root = (ScreenView) findViewById(R.id.space_view);
         root.setSpace(space);
-
-        // create 3 private spaces
-        createNewPrivateSpace();
-        createNewPrivateSpace();
-        createNewPrivateSpace();
-        
         root.invalidate();
         
         
@@ -90,7 +84,7 @@ public class MainChat extends Activity {
 					for(PrivateSpace p: PrivateSpace.currentSpaces){
 						if(p.isSelected())
 							PrivateSpace.currentSpaces.remove(p);
-					}
+					} 
 					break;
 				}
 				view.invalidate();
@@ -100,12 +94,14 @@ public class MainChat extends Activity {
     }
     
     // create a new private space, that you can add to the xml file
-    public void createNewPrivateSpace(){
+    public PrivateSpace createNewPrivateSpace(){
     	 LinearLayout bottomBar = (LinearLayout)findViewById(R.id.privateSpaceLinearLayout);
          PrivateSpace p = new PrivateSpace(this);
          p.setLayoutParams(PSparams);
          p.setMinimumWidth(50);
-         bottomBar.addView(p);
+         bottomBar.addView(p);  
+         bottomBar.invalidate();
+         return p;
     }
     
 

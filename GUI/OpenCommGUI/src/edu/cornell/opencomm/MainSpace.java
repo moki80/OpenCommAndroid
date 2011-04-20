@@ -38,20 +38,39 @@ class MainSpace extends PrivateSpace {
 	}
 	
 	private void init(Context context){
-		
-		/*LinearLayout bottomBar = (LinearLayout)findViewById(R.id.privateSpaceLinearLayout);
-		bottomBar.addView(new PrivateSpace(context));
-		bottomBar.invalidate(); */
-		//bottomBar.addView(new PrivateSpace(context)); */
+
 	}
 	
-	/** Initialize everyone, intended only for the main chat */
+	/** Initialize everyone, intended only for the main chat.
+	 * Also, initialize a few private spaces for the demonstration */
 	public void initializeEveryone(){
+		// create all the people
+		Person nora = new Person("Nora", "She's the best!", R.drawable.nora);
+		Person najla = new Person("Najla", "Is dating Jack Sparrow" , R.drawable.naj);
+		Person makoto = new Person("Makoto", "Doesn't respond to texts", R.drawable.mak);
+		Person risa = new Person("Risa", "Is destined to marry her dog", R.drawable.risa);
+		
+		// the main conference room, but everybody in it
 		peopleInSpace = new LinkedList<Person>(); 
-		peopleInSpace.add(new Person("Nora", "She's the best!", R.drawable.nora));
-		peopleInSpace.add(new Person("Najla", "Is dating Jack Sparrow" , R.drawable.naj));
-		peopleInSpace.add(new Person("Makoto", "Doesn't respond to texts", R.drawable.mak));
-		peopleInSpace.add(new Person("Risa", "Is destined to marry her dog", R.drawable.risa));
+		peopleInSpace.add(nora);
+		peopleInSpace.add(najla);
+		peopleInSpace.add(makoto);
+		peopleInSpace.add(risa);
+		
+		// create more private spaces, put some people in them
+		// p1 has makoto
+		// p2 has najla, risa
+		// p3 has najla, risa, nora
+		MainChat m = (MainChat)context;
+		PrivateSpace p1 = m.createNewPrivateSpace();
+		p1.add(makoto);
+		PrivateSpace p2 = m.createNewPrivateSpace();
+		p2.add(najla);
+		p2.add(risa);
+		PrivateSpace p3 = m.createNewPrivateSpace();
+		p3.add(najla);
+		p3.add(risa);
+		p3.add(nora);
 	}
 
 	@Override
