@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 
 public class PrivateSpace extends ImageButton {
 
+	Context context;
 	/** All the private spaces open in the app */
 	public static LinkedList<PrivateSpace> currentSpaces = new LinkedList<PrivateSpace>();
 	/** Colors private spaces can have */
@@ -42,16 +43,19 @@ public class PrivateSpace extends ImageButton {
 
 	public PrivateSpace(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		this.context = context;
 		init();
 	}
 
 	public PrivateSpace(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
 		init();
 	}
 
 	public PrivateSpace(Context context) {
 		super(context);
+		this.context = context;
 		init();
 	}
 
@@ -84,6 +88,7 @@ public class PrivateSpace extends ImageButton {
 
 		View v = null;
 		PrivateSpace.currentSpaces.add(this);
+		invalidate();
 	}
 
 	/**
@@ -230,12 +235,5 @@ public class PrivateSpace extends ImageButton {
 				+ this.getHeight());
 	}
 
-	// Nora experimenting
-	/*
-	 * public void clicked2(View view) { this.isSelected = !isSelected; if
-	 * (isSelected){ //make all others not selected for(PrivateSpace p :
-	 * PrivateSpace.currentSpaces){ if(p.equals(this)) continue;
-	 * 
-	 * p.isSelected = false; } } }
-	 */
+
 }

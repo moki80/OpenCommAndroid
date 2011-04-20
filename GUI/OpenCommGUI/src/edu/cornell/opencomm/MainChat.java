@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 /** The main chat screen with EVERYBODY'S icon in it 
  * 
@@ -23,6 +25,10 @@ public class MainChat extends Activity {
     /** Called when the activity is first created. */
 	private ScreenView root;
 	private MainSpace space;
+	LinearLayout.LayoutParams PSparams = new LinearLayout.LayoutParams(
+			ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+			0.0f);
+	
 	
     @Override
     /** Initialize all views (buttons, bars, etc.) and set OnClickListeners for necessary components
@@ -45,7 +51,16 @@ public class MainChat extends Activity {
         
         root = (ScreenView) findViewById(R.id.space_view);
         root.setSpace(space);
+
+        // create 3 private spaces
+        createNewPrivateSpace();
+        createNewPrivateSpace();
+        createNewPrivateSpace();
+        
         root.invalidate();
+        
+        
+        
         
      // set listener to main button
         Button mainButton = (Button)findViewById(R.id.main_button);
@@ -83,4 +98,15 @@ public class MainChat extends Activity {
 			}
 		}); 
     }
+    
+    // create a new private space, that you can add to the xml file
+    public void createNewPrivateSpace(){
+    	 LinearLayout bottomBar = (LinearLayout)findViewById(R.id.privateSpaceLinearLayout);
+         PrivateSpace p = new PrivateSpace(this);
+         p.setLayoutParams(PSparams);
+         p.setMinimumWidth(50);
+         bottomBar.addView(p);
+    }
+    
+
 }
