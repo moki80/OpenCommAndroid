@@ -11,106 +11,101 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
 
-/** Hold information about private space:
+/**
+ * Hold information about private space:
  * 
- * 1) Private Space icon (really the color)
- * 2) People in private space
+ * 1) Private Space icon (really the color) 2) People in private space
  * 
  * @author jnf34
- *
+ * 
  */
 
 public class PrivateSpace extends ImageButton {
-	
-	/**
-	 * All the private spaces open in the app
-	 */
+
+	/** All the private spaces open in the app */
 	public static LinkedList<PrivateSpace> currentSpaces = new LinkedList<PrivateSpace>();
-	/**
-	 * Colors private spaces can have
-	 */
-	public static int[] COLORS = {Color.BLUE,Color.YELLOW,Color.GREEN,Color.MAGENTA,Color.CYAN,Color.DKGRAY};
-	/**
-	 * Number to assign to new private spaces
-	 */
+	/** Colors private spaces can have */
+	public static int[] COLORS = { Color.BLUE, Color.YELLOW, Color.GREEN,
+			Color.MAGENTA, Color.CYAN, Color.DKGRAY };
+	/** Number to assign to new private spaces */
 	public static int privateSpaceCounter = 0;
-	
+	/** List of people currently in this private space */
 	protected LinkedList<Person> peopleInSpace = new LinkedList<Person>();
 
 	private int spaceId = -1;
 	private int color = Color.BLUE;
-	
+
 	protected boolean isSelected = false;
 	protected boolean isHovered = false;
 	public View.OnTouchListener ontouchlistener;
-	
+
 	public PrivateSpace(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
-	
+
 	public PrivateSpace(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
-	
+
 	public PrivateSpace(Context context) {
 		super(context);
 		init();
 	}
 
 	/**
-	 * Initialize the object's spaceId, color, and add it to the list of all spaces
+	 * Initialize the object's spaceId, color, and add it to the list of all
+	 * spaces
 	 */
-	private final synchronized void init(){
+	private final synchronized void init() {
 		this.spaceId = PrivateSpace.privateSpaceCounter++;
-		this.color = PrivateSpace.COLORS[spaceId%PrivateSpace.COLORS.length];
-		/*this.setOnClickListener(new OnClickListener(){
-			
-			public void onClick(View arg0) {
-				clicked(arg0);
-			}			
-		}); */
+		this.color = PrivateSpace.COLORS[spaceId % PrivateSpace.COLORS.length];
+		/*
+		 * this.setOnClickListener(new OnClickListener(){
+		 * 
+		 * public void onClick(View arg0) { clicked(arg0); } });
+		 */
 		View v = null;
-		
+
 		// Nora adding this
-		
-//		this.setOnTouchListener( new View.OnTouchListener() {
-//			
-//			public boolean onTouch(View view, MotionEvent evt) {
-//				switch(evt.getAction()){
-//				case MotionEvent.ACTION_DOWN:
-//					clicked(view);
-//					break;
-//				case MotionEvent.ACTION_MOVE:
-//					//clicked(view);
-//					break;
-//				case MotionEvent.ACTION_UP:
-//					clicked(view);
-//					break;
-//				}
-//				
-//				// TODO Auto-generated method stub
-//				return false;
-//			}
-//		});
-		
-		
-		
+
+		// this.setOnTouchListener( new View.OnTouchListener() {
+		//			
+		// public boolean onTouch(View view, MotionEvent evt) {
+		// switch(evt.getAction()){
+		// case MotionEvent.ACTION_DOWN:
+		// clicked(view);
+		// break;
+		// case MotionEvent.ACTION_MOVE:
+		// //clicked(view);
+		// break;
+		// case MotionEvent.ACTION_UP:
+		// clicked(view);
+		// break;
+		// }
+		//				
+		// // TODO Auto-generated method stub
+		// return false;
+		// }
+		// });
+
 		PrivateSpace.currentSpaces.add(this);
 	}
 
 	/**
-	 * Change state of selected variable, make sure only one space is selected at a time
-	 * ***This part may need to be moved to the MainChat class***
+	 * Change state of selected variable, make sure only one space is selected
+	 * at a time ***This part may need to be moved to the MainChat class***
+	 * 
 	 * @param arg0
 	 */
-	protected synchronized void clicked(View arg0) {
+	protected synchronized void toggle(View arg0) {
 		this.isSelected = !isSelected;
-		if (isSelected){ //make all others not selected
-			for(PrivateSpace p : PrivateSpace.currentSpaces){
-				if(p.equals(this)) continue;
-				
+		if (isSelected) { // make all others not selected
+			for (PrivateSpace p : PrivateSpace.currentSpaces) {
+				if (p.equals(this))
+					continue;
+
 				p.isSelected = false;
 			}
 		}
@@ -119,12 +114,13 @@ public class PrivateSpace extends ImageButton {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas); //Draw the regular stuff
-		
-		//Draw in 3 steps:
+		super.onDraw(canvas); // Draw the regular stuff
+
+		// Draw in 3 steps:
 		// 1. Draw background to erase old state
 		// 2. Draw this private space's color
-		// 3. Draw smaller square if the private space isn't open or being previewed
+		// 3. Draw smaller square if the private space isn't open or being
+		// previewed
 		int backgroundColor = R.color.scroll_background;
 		RectShape rect = new RectShape();
 		ShapeDrawable normalShape = new ShapeDrawable(rect);
@@ -133,38 +129,41 @@ public class PrivateSpace extends ImageButton {
 		canvas.drawColor(backgroundColor);
 		normalShape.draw(canvas);
 		RectShape rect2 = new RectShape();
-		if (!this.isSelected && !this.isHovered){
+		if (!this.isSelected && !this.isHovered) {
 			ShapeDrawable s = new ShapeDrawable(rect2);
 			s.getPaint().setColor(backgroundColor);
 			s.setBounds(6, 6, this.getHeight() - 4, this.getHeight() - 6);
 			s.draw(canvas);
 		}
 	}
-	
+
 	/**
 	 * Adds the person to this private space
+	 * 
 	 * @param p
 	 */
-	public void add(Person p){
-		this.clicked(this);
-		if (!this.peopleInSpace.contains(p)){
+	public void add(Person p) {
+		// setSelected(true)
+		if (!this.peopleInSpace.contains(p)) {
 			this.peopleInSpace.add(p);
 		}
 	}
-	
+
 	/**
 	 * Removes the person p from this space
+	 * 
 	 * @param p
 	 */
-	public void removeFromSpace(Person p){
+	public void removeFromSpace(Person p) {
 		this.peopleInSpace.remove(p);
 	}
-	
+
 	/**
 	 * Returns list of person objects for the people in this space
+	 * 
 	 * @return
 	 */
-	public LinkedList<Person> getPeople(){
+	public LinkedList<Person> getPeople() {
 		return this.peopleInSpace;
 	}
 
@@ -176,7 +175,8 @@ public class PrivateSpace extends ImageButton {
 	}
 
 	/**
-	 * @param color the color to set
+	 * @param color
+	 *            the color to set
 	 */
 	public void setColor(int color) {
 		this.color = color;
@@ -190,23 +190,39 @@ public class PrivateSpace extends ImageButton {
 	}
 
 	/**
-	 * @param isSelected the isSelected to set
+	 * @param isSelected
+	 *            the isSelected to set
 	 */
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+		// invalidate();
 	}
-	
+
 	// Nora added isHovered, will work with it more
-	public boolean isHovered(){
+	public boolean isHovered() {
 		return isHovered;
 	}
-	
-	public void setHovered(boolean isHovered){
-		this.isHovered = isHovered;
+
+	// If you hover over an Private Space icon with your person icon, then only
+	// highlight this icon and turn off everybody else's
+	public void setHovered(boolean isHovered) {
+		if (isHovered) {
+			//setSelected(true);
+			for (PrivateSpace p : currentSpaces) {
+				if (!p.equals(this))
+					p.setSelected(false);
+				else
+					p.setSelected(true);
+			}
+		}
+		else
+			setSelected(false);
+		invalidate();
 	}
 
 	/**
 	 * Returns true if the coordinates given are within this view
+	 * 
 	 * @param y
 	 * @param x
 	 * @return
@@ -214,21 +230,19 @@ public class PrivateSpace extends ImageButton {
 	public boolean contains(int x, int y) {
 		int[] location = new int[2];
 		this.getLocationOnScreen(location);
-		if (!this.isShown()) return false;
-		return (x > location[0]  && x < location[0] + this.getWidth()
-				&& y > location[1] - this.getHeight() && y < location[1] + this.getHeight());
+		if (!this.isShown())
+			return false;
+		return (x > location[0] && x < location[0] + this.getWidth()
+				&& y > location[1] - this.getHeight() && y < location[1]
+				+ this.getHeight());
 	}
-	
+
 	// Nora experimenting
 	/*
-	public void clicked2(View view) {
-		this.isSelected = !isSelected;
-		if (isSelected){ //make all others not selected
-			for(PrivateSpace p : PrivateSpace.currentSpaces){
-				if(p.equals(this)) continue;
-				
-				p.isSelected = false;
-			}
-		}
-	} */
+	 * public void clicked2(View view) { this.isSelected = !isSelected; if
+	 * (isSelected){ //make all others not selected for(PrivateSpace p :
+	 * PrivateSpace.currentSpaces){ if(p.equals(this)) continue;
+	 * 
+	 * p.isSelected = false; } } }
+	 */
 }

@@ -36,6 +36,7 @@ public class ScreenView extends LinearLayout {
 	int initialX=0, initialY=0; // position of the icon before you moved it
 	// NORA - I guestimated the mainScreenH and adjusted it, we might need a better method for this
 	int mainScreenH = 340; // the height of the main screen (the whole screen height - bar height)
+	PrivateSpace hoveredPrivSpace=null; // the Private Space that is being hovered over
 	
 	
 	
@@ -92,15 +93,25 @@ public class ScreenView extends LinearLayout {
 				}
 				break;
 			case MotionEvent.ACTION_MOVE:
+				// If a person icon is selected, then move the icon to the current position
 				if(selectedIcon!=null){
 					selectedIcon.setX(mouseX-(selectedIcon.getW()/2));
 					selectedIcon.setY(mouseY-(selectedIcon.getH()/2));
-					// Nora experimenting
-				/*	for(PrivateSpace p : PrivateSpace.currentSpaces){
-						//int x = p.getLeft();
-						if(mouseX>=p.getLeft() && mouseX<=p.getRight() && mouseY>=p.getTop() && mouseY<=p.getBottom())
-							p.clicked2(p);
-					} */
+					// if icon is dragged over private space, then highlight that private space icon
+					if(hoveredPrivSpace==null){
+						for (PrivateSpace p : PrivateSpace.currentSpaces){
+							if (p.contains(mouseX,mouseY)){
+								p.setHovered(true);
+								hoveredPrivSpace = p;
+							}
+						}
+					}
+					else if (hoveredPrivSpace!=null){
+						if(!hoveredPrivSpace.contains(mouseX, mouseY)){
+							hoveredPrivSpace.setHovered(false);
+							hoveredPrivSpace = null;
+						}
+					}
 				}
 				break;
 			case MotionEvent.ACTION_UP:
