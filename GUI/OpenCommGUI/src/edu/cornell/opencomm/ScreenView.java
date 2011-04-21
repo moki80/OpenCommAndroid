@@ -5,14 +5,26 @@ import java.util.ListIterator;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
 public class ScreenView extends LinearLayout {
+
+	private Context context;
+	// the group of people this is displaying
+	private PrivateSpace space;
+	private LinkedList<PersonView> icons;
+	int x = 0, y = 0, w = 320, h = 430;
+	private PersonView selectedIcon;
+	// position of the icon before you moved it
+	int initialX = 0, initialY = 0;
+	// NORA - I guestimated the mainScreenH and adjusted it, we might need a
+	// better method for this the height of the main screen (the whole screen
+	// height - bar height)
+	int mainScreenH = 340;
+	// the Private Space that is being hovered over
+	PrivateSpace hoveredPrivSpace = null;
 
 	public ScreenView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -28,19 +40,6 @@ public class ScreenView extends LinearLayout {
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 	}
-
-	private Context context;
-	private PrivateSpace space; // the group of people this is displaying
-	private LinkedList<PersonView> icons;
-	int x = 0, y = 0, w = 320, h = 430;
-	private PersonView selectedIcon;
-	int initialX = 0, initialY = 0; // position of the icon before you moved it
-	// NORA - I guestimated the mainScreenH and adjusted it, we might need a
-	// better method for this
-	int mainScreenH = 340; // the height of the main screen (the whole screen
-							// height - bar height)
-	PrivateSpace hoveredPrivSpace = null; // the Private Space that is being
-											// hovered over
 
 	public void setSpace(PrivateSpace s) {
 		space = s;
@@ -60,7 +59,7 @@ public class ScreenView extends LinearLayout {
 			Person p = i.next();
 			icons.add(new PersonView(context, p, (int) (Math.floor(w
 					* Math.random())), (int) (Math.floor(mainScreenH
-					* Math.random())), 50, 50));
+					* Math.random())), 55, 55));
 			i = people.listIterator(i.nextIndex());
 		}
 
@@ -73,10 +72,9 @@ public class ScreenView extends LinearLayout {
 		// draw people icons
 		ListIterator<PersonView> i = icons.listIterator();
 		while (i.hasNext()) {
-			
+
 			PersonView icon = i.next();
 			icon.draw(canvas);
-			//canvas.drawBitmap(icon.getIcon(), icon.getX(), icon.getY(), p);
 		}
 	}
 
@@ -93,18 +91,22 @@ public class ScreenView extends LinearLayout {
 				PersonView icon = i.next();
 				if (icon.clickedInside(mouseX, mouseY)) {
 					selectedIcon = icon;
+
 					initialX = icon.getX();
 					initialY = icon.getY();
 				}
 				i = icons.listIterator(i.nextIndex());
 			}
 			break;
+			
 		case MotionEvent.ACTION_MOVE:
 			// If a person icon is selected, then move the icon to the current
 			// position
 			if (selectedIcon != null) {
+				selectedIcon.moved = true;
 				selectedIcon.setX(mouseX - (selectedIcon.getW() / 2));
 				selectedIcon.setY(mouseY - (selectedIcon.getH() / 2));
+				//
 				// if icon is dragged over private space, then highlight that
 				// private space icon
 				if (hoveredPrivSpace == null) {
@@ -122,8 +124,13 @@ public class ScreenView extends LinearLayout {
 				}
 			}
 			break;
+			
 		case MotionEvent.ACTION_UP:
 			if (selectedIcon != null) {
+				if (!selectedIcon.moved) {
+					selectedIcon.changeSelected();
+				}
+				selectedIcon.moved = false;
 				for (PrivateSpace p : PrivateSpace.currentSpaces) {
 					if (p.contains(mouseX, mouseY)) {
 						p.add(selectedIcon.getPerson());

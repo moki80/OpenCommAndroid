@@ -1,8 +1,5 @@
 package edu.cornell.opencomm;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 public class Person {
 	private String name;
 	private String description;
@@ -25,7 +22,7 @@ public class Person {
 	public int getImage(){
 		return image;
 	}
-	
+	//
 	public void setImage(int image){
 		this.image = image;
 	}

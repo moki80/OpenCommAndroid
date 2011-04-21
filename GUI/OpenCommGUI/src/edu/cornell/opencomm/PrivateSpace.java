@@ -38,7 +38,7 @@ public class PrivateSpace extends ImageButton {
 	private int color = Color.BLUE;
 
 	protected boolean isSelected = false;
-	//protected boolean isHovered = false;
+	// protected boolean isHovered = false;
 	public View.OnTouchListener ontouchlistener;
 
 	public PrivateSpace(Context context, AttributeSet attrs, int defStyle) {
@@ -66,15 +66,12 @@ public class PrivateSpace extends ImageButton {
 	private final synchronized void init() {
 		this.spaceId = PrivateSpace.privateSpaceCounter++;
 		this.color = PrivateSpace.COLORS[spaceId % PrivateSpace.COLORS.length];
-		
 
-		 
-		  this.setOnTouchListener( new View.OnTouchListener() {
-			
-			@Override
+		this.setOnTouchListener(new View.OnTouchListener() {
+
 			public boolean onTouch(View view, MotionEvent evt) {
-				switch(evt.getAction()){
-				case MotionEvent.ACTION_DOWN:		
+				switch (evt.getAction()) {
+				case MotionEvent.ACTION_DOWN:
 					break;
 				case MotionEvent.ACTION_MOVE:
 					break;
@@ -86,7 +83,7 @@ public class PrivateSpace extends ImageButton {
 			}
 		});
 
-		View v = null;
+		// View v = null;
 		PrivateSpace.currentSpaces.add(this);
 		invalidate();
 	}
@@ -118,7 +115,7 @@ public class PrivateSpace extends ImageButton {
 		// 1. Draw background to erase old state
 		// 2. Draw this private space's color
 		// 3. Draw smaller square if the private space isn't open or being
-		// previewed
+		// previewed //
 		int backgroundColor = R.color.scroll_background;
 		RectShape rect = new RectShape();
 		ShapeDrawable normalShape = new ShapeDrawable(rect);
@@ -197,23 +194,22 @@ public class PrivateSpace extends ImageButton {
 	}
 
 	// Nora added isHovered, will work with it more
-/*	public boolean isHovered() {
-		return isHovered;
-	}*/
+	/*
+	 * public boolean isHovered() { return isHovered; }
+	 */
 
 	// If you hover over an Private Space icon with your person icon, then only
 	// highlight this icon and turn off everybody else's
 	public void setHovered(boolean isHovered) {
 		if (isHovered) {
-			//setSelected(true);
+			// setSelected(true);
 			for (PrivateSpace p : currentSpaces) {
 				if (!p.equals(this))
 					p.setSelected(false);
 				else
 					p.setSelected(true);
 			}
-		}
-		else
+		} else
 			setSelected(false);
 		invalidate();
 	}
@@ -234,6 +230,5 @@ public class PrivateSpace extends ImageButton {
 				&& y > location[1] - this.getHeight() && y < location[1]
 				+ this.getHeight());
 	}
-
 
 }
