@@ -22,7 +22,7 @@ public class Person {
 	public int getImage(){
 		return image;
 	}
-	//
+	
 	public void setImage(int image){
 		this.image = image;
 	}

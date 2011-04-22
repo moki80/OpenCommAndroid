@@ -1,5 +1,6 @@
 package edu.cornell.opencomm;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -69,6 +70,10 @@ public class PersonView extends ImageButton {
 	public void changeSelected() {
 		this.selected = !this.selected;
 	}
+	
+	public boolean isSelected() {
+		return selected;
+	}
 
 	public boolean clickedInside(int mouseX, int mouseY) {
 		if ((mouseX >= x) && (mouseX <= (x + w)) && (mouseY >= y)
@@ -79,7 +84,7 @@ public class PersonView extends ImageButton {
 
 	public void draw(Canvas canvas) {
 		super.onDraw(canvas);
-		//
+		
 		if (selected) {
 			RectShape rect2 = new RectShape();
 			ShapeDrawable s = new ShapeDrawable(rect2);
@@ -91,3 +96,4 @@ public class PersonView extends ImageButton {
 		canvas.drawBitmap(image, x, y, null);
 	}
 }
+
