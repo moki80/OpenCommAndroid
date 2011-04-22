@@ -23,16 +23,33 @@ import android.widget.ImageButton;
 
 public class PrivateSpace extends Space {
 	PrivateSpaceView psv;
+	MainApplication activity=null;
+	static int numPrivateSpaces=0;
+	int idNumber;
 	
 	
 	public PrivateSpace(Context c) {
 		super(c);
 		psv = new PrivateSpaceView(context, this);
 		PrivateSpaceView.currentSpaces.add(psv);
+		idNumber = numPrivateSpaces;
+		numPrivateSpaces ++;
 	}
 	
 	public PrivateSpaceView getPrivateSpaceView(){
 		return psv;
 	}
+	
+	public MainApplication getActivity(){
+		return activity;
+	}
+	
+	public void setActivity(MainApplication activity){
+		this.activity = activity;
+	}
+	public int getID(){
+		return idNumber;
+	}
+	
 
 }
