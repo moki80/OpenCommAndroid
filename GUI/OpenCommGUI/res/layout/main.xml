@@ -6,7 +6,7 @@
     android:layout_height="fill_parent"
     android:weightSum="25"
     >
-	<edu.cornell.opencomm.ScreenView android:id="@+id/space_view"  
+	<edu.cornell.opencomm.SpaceView android:id="@+id/space_view"  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:layout_weight="24"
