@@ -4,4 +4,5 @@
     <string name="app_name">OpenComm6</string>
 <string name="trash_button_text">Trash</string>
 <string name="main_button_text">Main</string>
+<string name="add_button_text">Add</string>
 </resources>

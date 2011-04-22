@@ -27,6 +27,14 @@
     		android:layout_weight="1"
     		android:minWidth="80dip"
     		/>
+    	<Button android:id="@+id/add_button"
+    		android:padding="5dip"
+    		android:text="@string/add_button_text"
+    		android:layout_width="wrap_content"
+    		android:layout_height="fill_parent" 
+    		android:layout_weight="1"
+    		android:minWidth="50dip"
+    		/>
     		<HorizontalScrollView 
     			android:layout_width="wrap_content"
 	    		android:layout_height="fill_parent"
