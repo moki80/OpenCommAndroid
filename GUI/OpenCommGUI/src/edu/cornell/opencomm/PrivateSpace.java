@@ -1,16 +1,6 @@
 package edu.cornell.opencomm;
 
-import java.util.LinkedList;
-
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageButton;
 
 /**
  * Hold information about private space:
@@ -23,33 +13,32 @@ import android.widget.ImageButton;
 
 public class PrivateSpace extends Space {
 	PrivateSpaceView psv;
-	MainApplication activity=null;
-	static int numPrivateSpaces=0;
+	MainApplication activity = null;
+	static int numPrivateSpaces = 0;
 	int idNumber;
-	
-	
+
 	public PrivateSpace(Context c) {
 		super(c);
 		psv = new PrivateSpaceView(context, this);
 		PrivateSpaceView.currentSpaces.add(psv);
 		idNumber = numPrivateSpaces;
-		numPrivateSpaces ++;
+		numPrivateSpaces++;
 	}
-	
-	public PrivateSpaceView getPrivateSpaceView(){
+
+	public PrivateSpaceView getPrivateSpaceView() {
 		return psv;
 	}
-	
-	public MainApplication getActivity(){
+
+	public MainApplication getActivity() {
 		return activity;
 	}
-	
-	public void setActivity(MainApplication activity){
+
+	public void setActivity(MainApplication activity) {
 		this.activity = activity;
 	}
-	public int getID(){
+
+	public int getID() {
 		return idNumber;
 	}
-	
 
 }

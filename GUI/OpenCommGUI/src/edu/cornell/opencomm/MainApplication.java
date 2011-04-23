@@ -1,20 +1,14 @@
 package edu.cornell.opencomm;
 
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.LinkedList;
-import java.util.ListIterator;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 /**
  * @author noranq
@@ -24,9 +18,9 @@ public class MainApplication extends Activity {
 
 	// TODO: make mainspace static
 	public static Space mainspace = null;
-	Space space; // the space that you are updating
+	static Space space; // the space that you are updating
 	static LinkedList<Person> allPeople;
-	public static final String PS_ID= "edu.cornell.opencomm.which_ps"; 
+	public static final String PS_ID = "edu.cornell.opencomm.which_ps";
 
 	LinearLayout.LayoutParams PSparams = new LinearLayout.LayoutParams(
 			ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -36,12 +30,13 @@ public class MainApplication extends Activity {
 		// Create activity and make it listen to XML file
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
-		
+
 		// Spaceview is already specified in XML file
 		SpaceView spaceview = (SpaceView) findViewById(R.id.space_view);
-		/* If first starting program, then you always start with the mainchat room
-		 * this room must be initialized to hold all people involved in conversation
+		/*
+		 * If first starting program, then you always start with the mainchat
+		 * room this room must be initialized to hold all people involved in
+		 * conversation
 		 */
 		if (mainspace == null) {
 			space = new Space(this);
@@ -49,37 +44,42 @@ public class MainApplication extends Activity {
 			initializeMainSpace(space); // initialize people
 		}
 
-		/* If creating a new private space, then need to know which already existing
-		 * PrivateSpace it is using */
-		else{
+		/*
+		 * If creating a new private space, then need to know which already
+		 * existing PrivateSpace it is using
+		 */
+		else {
 			int ID = getIntent().getIntExtra(PS_ID, -1);
-			//space = (PrivateSpace)PrivateSpaceView.currentSpaces
-			for(PrivateSpaceView pv: PrivateSpaceView.currentSpaces){
-				PrivateSpace p = (PrivateSpace)(pv.getSpace());
-				if(p.getID() == ID){
+			// space = (PrivateSpace)PrivateSpaceView.currentSpaces
+			for (PrivateSpaceView pv : PrivateSpaceView.currentSpaces) {
+				PrivateSpace p = (PrivateSpace) (pv.getSpace());
+				if (p.getID() == ID) {
 					space = p;
 					p.setActivity(this);
 				}
 			}
 		}
-		space.addSpaceView(spaceview); 
+		space.addSpaceView(spaceview);
 		initializeButtons();
 		initializePrivateSpaces();
 	}
-	
-	/* onStart - draw privatespaceviews and personviews again, need to update in case model was changed */
-	protected void onStart(){
+
+	/*
+	 * onStart - draw privatespaceviews and personviews again, need to update in
+	 * case model was changed
+	 */
+	protected void onStart() {
 		super.onStart();
 	}
-	
-	protected void onStop(){
+
+	protected void onStop() {
 		super.onStop();
 	}
-	
+
 	/**
-	 * If is the first main space created (for main conference chat, 
-	 * then make sure that everyone is added to this
-	 * list space. Create everybody to begin with.
+	 * If is the first main space created (for main conference chat, then make
+	 * sure that everyone is added to this list space. Create everybody to begin
+	 * with.
 	 */
 	public void initializeMainSpace(Space mainspace) {
 		Person nora = new Person("Nora", "She's the best!", R.drawable.nora);
@@ -106,7 +106,7 @@ public class MainApplication extends Activity {
 	public void initializeButtons() {
 		// Initialize main, add, and trash button functionality
 		// TODO: the add button is temporary
-		
+
 		// set listener to main button
 		Button mainButton = (Button) findViewById(R.id.main_button);
 		mainButton.setOnTouchListener(new View.OnTouchListener() {
@@ -119,14 +119,16 @@ public class MainApplication extends Activity {
 				case MotionEvent.ACTION_UP:
 					// returns you to the main conversation
 					Space main = MainApplication.mainspace;
-					Intent  intent = ((MainApplication)(main.context)).getIntent();
-			        startActivity(intent);
-			        finish(); 	
+					Intent intent = ((MainApplication) (main.context))
+							.getIntent();
+					startActivity(intent);
+					finish();
 					break;
 				}
 				return false;
 			}
 		});
+
 		// temporary button that adds private spaces
 		Button addButton = (Button) findViewById(R.id.add_button);
 		addButton.setOnTouchListener(new View.OnTouchListener() {
@@ -144,6 +146,7 @@ public class MainApplication extends Activity {
 				return false;
 			}
 		});
+
 		// set listener to trash button
 		Button trashButton = (Button) findViewById(R.id.trash_button);
 		trashButton.setOnTouchListener(new View.OnTouchListener() {
@@ -155,22 +158,25 @@ public class MainApplication extends Activity {
 					break;
 				case MotionEvent.ACTION_UP:
 					// remove private spaces if they are highlighted
-					// TODO for now only deletes one at a time, but later should delete multiple
+					// TODO for now only deletes one at a time, but later should
+					// delete multiple
 					PrivateSpaceView deleteSpace = null;
 					for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
 						if (p.isSelected())
 							deleteSpace = p;
 					}
-					removePrivateSpace(deleteSpace); 
-					
-					// remove people from private spaces (only works in private space)
-					// TODO for now only deletes one at a time, but later can delete multiple
-					if(space instanceof PrivateSpace){
+					removePrivateSpace(deleteSpace);
+
+					// remove people from private spaces (only works in private
+					// space)
+					// TODO for now only deletes one at a time, but later can
+					// delete multiple
+					if (space instanceof PrivateSpace) {
 						PersonView deleteIcon = null;
-						for(PersonView icon: space.getPeople()){
-							if(icon.isSelected())
-							   deleteIcon = icon;
-								
+						for (PersonView icon : space.getPeople()) {
+							if (icon.isSelected())
+								deleteIcon = icon;
+
 						}
 						removeIcon(space, deleteIcon);
 					}
@@ -181,15 +187,17 @@ public class MainApplication extends Activity {
 		});
 	}
 
-	/** Automatically initialize all private spaces to the bottom bar no matter where */
-	public void initializePrivateSpaces(){
-		/*if(PrivateSpaceView.currentSpaces!=null){
-			for(PrivateSpaceView pv : PrivateSpaceView.currentSpaces){
-				createPrivateSpaceIcon(pv);
-			}
-		} */
+	/**
+	 * Automatically initialize all private spaces to the bottom bar no matter
+	 * where
+	 */
+	public void initializePrivateSpaces() {
+		/*
+		 * if(PrivateSpaceView.currentSpaces!=null){ for(PrivateSpaceView pv :
+		 * PrivateSpaceView.currentSpaces){ createPrivateSpaceIcon(pv); } }
+		 */
 	}
-	
+
 	/** Draw PrivateSpace icon to the screen, add to XML file */
 	public void createPrivateSpaceIcon(PrivateSpaceView pv) {
 		LinearLayout bottomBar = (LinearLayout) findViewById(R.id.privateSpaceLinearLayout);
@@ -223,29 +231,34 @@ public class MainApplication extends Activity {
 	}
 
 	/** Creates a new activity for this PrivateSpace */
-	public void openNewPSActivity(PrivateSpace p){
-		Intent intent= new Intent(MainApplication.this, MainApplication.class);
+	public void openNewPSActivity(PrivateSpace p) {
+		Intent intent = new Intent(MainApplication.this, MainApplication.class);
 		int PSid = p.getID();
 		intent.putExtra(PS_ID, PSid);
 		startActivity(intent);
 	}
-	
+
 	/** Reopens the activity for this PrivateSpace */
-	public void restartPSActivity(PrivateSpace p){
+	public void restartPSActivity(PrivateSpace p) {
 		Intent intent = (p.getActivity()).getIntent();
-        startActivity(intent);
-        finish(); 	
+		startActivity(intent);
+		finish();
 	}
-	
+
 	/** Remove an icon from this PrivateSpace */
-	public void removeIcon(Space space, PersonView icon){
+	public void removeIcon(Space space, PersonView icon) {
 		// remove from private space object
-		(space.getPeople()).remove(icon); 
+		(space.getPeople()).remove(icon);
 		// remove from privateSpaceView
 		LinkedList<PersonView> icons = (space.getSpaceView()).getIcons();
 		icons.remove(icon);
 		LinearLayout screen = (LinearLayout) findViewById(R.id.space_view);
 		screen.invalidate();
+
+	}
+
+	public static void showPreview(LinkedList<PersonView> psv) {
+		space.spaceView.setPreview(psv);
 
 	}
 
