@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 public class PrivateSpaceView extends ImageButton {
 
 	Context context;
-	Space space;
+	PrivateSpace space;
 
 	/** All the private spaces open in the app */
 	public static LinkedList<PrivateSpaceView> currentSpaces = new LinkedList<PrivateSpaceView>();
@@ -39,27 +39,40 @@ public class PrivateSpaceView extends ImageButton {
 	public boolean clickedOnce = false;
 	// PreviewView preview;
 	boolean showPreview = false;
+	
+	public PrivateSpaceView clone(){
+		PrivateSpace ps = this.space.clone();
+		PrivateSpaceView psv = new PrivateSpaceView(context,ps);		
+		psv.spaceId = this.spaceId;
+		psv.color = this.color;
+		init2();
+		
+		return psv;
+	}
 
 	public PrivateSpaceView(Context context, AttributeSet attrs, int defStyle,
 			Space parent) {
 		super(context, attrs, defStyle);
 		this.context = context;
-		this.space = parent;
+		this.space = (PrivateSpace) parent;
 		init();
+		init2();
 	}
 
 	public PrivateSpaceView(Context context, AttributeSet attrs, Space parent) {
 		super(context, attrs);
 		this.context = context;
-		this.space = parent;
+		this.space = (PrivateSpace) parent;
 		init();
+		init2();
 	}
 
 	public PrivateSpaceView(Context context, Space parent) {
 		super(context);
 		this.context = context;
-		this.space = parent;
+		this.space = (PrivateSpace) parent;
 		init();
+		init2();
 	}
 
 	/**
@@ -70,7 +83,9 @@ public class PrivateSpaceView extends ImageButton {
 		this.spaceId = PrivateSpaceView.privateSpaceCounter++;
 		this.color = PrivateSpaceView.COLORS[spaceId
 				% PrivateSpaceView.COLORS.length];
-
+	}
+	
+	private final void init2(){
 		this.setOnTouchListener(new View.OnTouchListener() {
 
 			public boolean onTouch(View view, MotionEvent evt) {

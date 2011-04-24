@@ -22,6 +22,10 @@ public class Space {
 		sv.createIcons(this);
 		sv.invalidate();
 	}
+	
+	protected Space(){
+		
+	}
 
 	/** Add a person to this space by putting in their icon */
 	public void add(Person p) {

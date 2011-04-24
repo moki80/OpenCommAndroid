@@ -52,6 +52,7 @@ public class MainApplication extends Activity {
 			int ID = getIntent().getIntExtra(PS_ID, -1);
 			// space = (PrivateSpace)PrivateSpaceView.currentSpaces
 			for (PrivateSpaceView pv : PrivateSpaceView.currentSpaces) {
+				createPrivateSpaceIcon(pv);
 				PrivateSpace p = (PrivateSpace) (pv.getSpace());
 				if (p.getID() == ID) {
 					space = p;
@@ -201,9 +202,10 @@ public class MainApplication extends Activity {
 	/** Draw PrivateSpace icon to the screen, add to XML file */
 	public void createPrivateSpaceIcon(PrivateSpaceView pv) {
 		LinearLayout bottomBar = (LinearLayout) findViewById(R.id.privateSpaceLinearLayout);
-		pv.setLayoutParams(PSparams);
-		pv.setMinimumWidth(50);
-		bottomBar.addView(pv);
+		PrivateSpaceView copy = pv.clone();
+		copy.setLayoutParams(PSparams);
+		copy.setMinimumWidth(50);
+		bottomBar.addView(copy);
 		bottomBar.invalidate();
 	}
 

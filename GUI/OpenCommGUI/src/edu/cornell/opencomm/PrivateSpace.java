@@ -24,6 +24,17 @@ public class PrivateSpace extends Space {
 		idNumber = numPrivateSpaces;
 		numPrivateSpaces++;
 	}
+	
+	private PrivateSpace(){
+		
+	}
+	
+	public PrivateSpace clone(){
+		PrivateSpace p = new PrivateSpace();
+		p.idNumber = this.idNumber;
+		p.psv = null;
+		return p;
+	}
 
 	public PrivateSpaceView getPrivateSpaceView() {
 		return psv;
