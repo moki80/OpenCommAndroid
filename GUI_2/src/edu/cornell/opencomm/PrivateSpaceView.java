@@ -15,20 +15,20 @@ import android.widget.ImageButton;
 public class PrivateSpaceView extends ImageButton {
 
 	Context context;
-	Space space;
-	
+	PrivateSpace space;
+
 	/** All the private spaces open in the app */
 	public static LinkedList<PrivateSpaceView> currentSpaces = new LinkedList<PrivateSpaceView>();
-	
+
 	/** Colors private spaces can have */
 	public static int[] COLORS = { Color.BLUE, Color.YELLOW, Color.GREEN,
 			Color.MAGENTA, Color.CYAN, Color.DKGRAY };
-	
+
 	/** Number to assign to new private spaces */
 	public static int privateSpaceCounter = 0;
-	
+
 	/** List of people currently in this private space */
-	//protected LinkedList<Person> peopleInSpace = new LinkedList<Person>();
+	// protected LinkedList<Person> peopleInSpace = new LinkedList<Person>();
 
 	private int spaceId = -1;
 	private int color = Color.BLUE;
@@ -36,27 +36,43 @@ public class PrivateSpaceView extends ImageButton {
 	protected boolean isSelected = false;
 	// protected boolean isHovered = false;
 	public View.OnTouchListener ontouchlistener;
-	public boolean clickedOnce=false;
+	public boolean clickedOnce = false;
+	// PreviewView preview;
+	boolean showPreview = false;
+	
+	public PrivateSpaceView clone(){
+		PrivateSpace ps = this.space.clone();
+		PrivateSpaceView psv = new PrivateSpaceView(context,ps);		
+		psv.spaceId = this.spaceId;
+		psv.color = this.color;
+		init2();
+		
+		return psv;
+	}
 
-	public PrivateSpaceView(Context context, AttributeSet attrs, int defStyle, Space parent) {
+	public PrivateSpaceView(Context context, AttributeSet attrs, int defStyle,
+			Space parent) {
 		super(context, attrs, defStyle);
 		this.context = context;
-		this.space = parent;
+		this.space = (PrivateSpace) parent;
 		init();
+		init2();
 	}
 
 	public PrivateSpaceView(Context context, AttributeSet attrs, Space parent) {
 		super(context, attrs);
 		this.context = context;
-		this.space = parent;
+		this.space = (PrivateSpace) parent;
 		init();
+		init2();
 	}
 
 	public PrivateSpaceView(Context context, Space parent) {
 		super(context);
 		this.context = context;
-		this.space = parent;
+		this.space = (PrivateSpace) parent;
 		init();
+		init2();
 	}
 
 	/**
@@ -65,8 +81,11 @@ public class PrivateSpaceView extends ImageButton {
 	 */
 	private final synchronized void init() {
 		this.spaceId = PrivateSpaceView.privateSpaceCounter++;
-		this.color = PrivateSpaceView.COLORS[spaceId % PrivateSpaceView.COLORS.length];
-
+		this.color = PrivateSpaceView.COLORS[spaceId
+				% PrivateSpaceView.COLORS.length];
+	}
+	
+	private final void init2(){
 		this.setOnTouchListener(new View.OnTouchListener() {
 
 			public boolean onTouch(View view, MotionEvent evt) {
@@ -77,11 +96,15 @@ public class PrivateSpaceView extends ImageButton {
 					break;
 				case MotionEvent.ACTION_UP:
 					toggle(view);
-					if(!clickedOnce)
-						clickedOnce=true;
-					else if (clickedOnce){
-						openPrivateSpace(); // start new privateSpace activity! (either create new or restart)
+					if (!clickedOnce) {
+						clickedOnce = true;
+						MainApplication.showPreview(space.people);
+
+					} else if (clickedOnce) {
+						openPrivateSpace(); // start new privateSpace activity!
+											// (either create new or restart)
 						clickedOnce = false;
+						MainApplication.showPreview(null);
 					}
 					break;
 				}
@@ -103,7 +126,6 @@ public class PrivateSpaceView extends ImageButton {
 			for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
 				if (p.equals(this))
 					continue;
-
 				p.isSelected = false;
 			}
 		}
@@ -132,49 +154,22 @@ public class PrivateSpaceView extends ImageButton {
 			s.getPaint().setColor(backgroundColor);
 			s.setBounds(6, 6, this.getHeight() - 4, this.getHeight() - 6);
 			s.draw(canvas);
-		}
+			showPreview = false;
+
+		} else
+			showPreview = true;
 	}
-	
-	public void openPrivateSpace(){
-		PrivateSpace p = (PrivateSpace)space;
+
+	public void openPrivateSpace() {
+		PrivateSpace p = (PrivateSpace) space;
 		// activity has not been created for this PrivateSpace yet
-		if(p.getActivity()==null)
-			((MainApplication)context).openNewPSActivity(p);
+		if (p.getActivity() == null)
+			((MainApplication) context).openNewPSActivity(p);
 		// if activity has already been created for this, then restart it
-		else if (p.getActivity()!=null){
-			((MainApplication)context).restartPSActivity(p);
+		else if (p.getActivity() != null) {
+			((MainApplication) context).restartPSActivity(p);
 		}
 	}
-
-	/**
-	 * Adds the person to this private space
-	 * 
-	 * @param p
-	 */
-	/*public void add(Person p) {
-		// setSelected(true)
-		if (!this.peopleInSpace.contains(p)) {
-			this.peopleInSpace.add(p);
-		}
-	}*/
-
-	/**
-	 * Removes the person p from this space
-	 * 
-	 * @param p
-	 */
-	/*public void removeFromSpace(Person p) {
-		this.peopleInSpace.remove(p);
-	}*/
-
-	/**
-	 * Returns list of person objects for the people in this space
-	 * 
-	 * @return
-	 */
-	/*public LinkedList<Person> getPeople() {
-		return this.peopleInSpace;
-	}*/
 
 	/**
 	 * @return the color
@@ -244,9 +239,9 @@ public class PrivateSpaceView extends ImageButton {
 				&& y > location[1] - this.getHeight() && y < location[1]
 				+ this.getHeight());
 	}
-	
-	public Space getSpace(){
+
+	public Space getSpace() {
 		return space;
 	}
-	
+
 }

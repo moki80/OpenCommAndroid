@@ -1,6 +1,5 @@
 package edu.cornell.opencomm;
 
-
 import java.util.LinkedList;
 
 import android.content.Context;
@@ -14,33 +13,50 @@ public class Space {
 
 	public Space(Context c) {
 		context = c;
-		//spaceView = new SpaceView(context, this);
+		spaceView = new SpaceView(context, this);
 		people = new LinkedList<PersonView>();
 	}
 
-	public void addSpaceView(SpaceView sv){
+	public void addSpaceView(SpaceView sv) {
 		spaceView = sv;
 		sv.createIcons(this);
 		sv.invalidate();
 	}
 	
-	/** Add a person to this space by putting in their icon */
+	protected Space(){
+		
+	}
+
+	/** Add a person to this space by putting in their icon, tell the network
+	 * that you initiated this adding */
 	public void add(Person p) {
 		PersonView pv = new PersonView(context, p,
-				(int) (Math.floor((SpaceView.w - 55)* Math.random())),
-				(int) (Math.floor(SpaceView.mainScreenH * Math.random())), 55, 55);
+				(int) (Math.floor((SpaceView.w - 55) * Math.random())),
+				(int) (Math.floor(SpaceView.mainScreenH * Math.random())), 55,
+				55);
 		this.people.add(pv);
+		// tell the network
+		((MainApplication)context).sendAddUserToPrivateSpace(this, p);
 	}
 	
-	
-	public LinkedList<PersonView> getPeople(){
+	/** Add a person to this space by putting in their icon because someone else
+	 * added this person in */
+	public void forcedAdd(Person p) {
+		PersonView pv = new PersonView(context, p,
+				(int) (Math.floor((SpaceView.w - 55) * Math.random())),
+				(int) (Math.floor(SpaceView.mainScreenH * Math.random())), 55,
+				55);
+		this.people.add(pv);
+	}
+
+	public LinkedList<PersonView> getPeople() {
 		return people;
 	}
 
-	public SpaceView getSpaceView(){
+	public SpaceView getSpaceView() {
 		return spaceView;
 	}
-	
+
 	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(Color.LTGRAY);
 
