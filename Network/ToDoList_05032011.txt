@@ -1,0 +1,28 @@
+GUI:
+- create PS
+- receive PS
+- add usre to PS
+- remove user from PS
+
+Network:
+- log in to the network
+- create PS
+- receive creation of PS
+- add user to PS
+- receive addition of user to PS
+- remove user from PS
+- receive removal of user from PS
+
+Risa:
+- log in to the network
+- create PS
+- receive creation of PS
+- delete PS
+- receive deletion PS
+
+Han-wei:
+- add user to PS
+- receive addition of user to PS
+- remove user from PS
+- receive removal of user from PS
+
