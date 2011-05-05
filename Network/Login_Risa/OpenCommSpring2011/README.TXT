@@ -29,7 +29,7 @@
 	5. Import the zipped files into the necessary locations.
 		
 	
-	6. Run Login.java
+	6. Run Login.java (success of Login verified through LogCat with tag "XMPPService")
 	
 ================================================================================
 ================================================================================
