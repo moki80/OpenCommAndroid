@@ -38,5 +38,7 @@ public class Networks {
 	public static final String ROOMPASSWORD = packageName + "ROOMPASSWORD";
 	public static final String NICKNAME = packageName + "NICKNAME";
 	public static final String INVITELIST = packageName + "INVITELIST";
+
+	public static final String SERVICE_NAME = "@conference.jabber.org";
 	
 }

@@ -40,9 +40,9 @@ public class MainApplication extends Activity {
 	static Space space; // the space that you are updating
 	static LinkedList<Person> allPeople;
 	public static final String PS_ID = "edu.cornell.opencomm.which_ps";
-	private static final Object INITIAL_USER = "mucopencomm";
-	private static final String MAIN_CONFERENCE_ROOMNAME = "OpenComm_Test_MainConf";
-	private static final String REASON = "Testing GUI Invites";
+	public static final Object INITIAL_USER = "mucopencomm";
+	public static final String MAIN_CONFERENCE_ROOMNAME = "OpenCommTestMainConf";
+	public static final String REASON = "Testing GUI Invites";
 	public static HashMap<String,Person> id_to_person;
 	private String username;
 	private String password;
@@ -69,6 +69,7 @@ public class MainApplication extends Activity {
 			mainspace = space;
 			id_to_person = new HashMap<String,Person>();
 			initializeMainSpace(space); // initialize people and pictures in the mainspace
+			mainspace.setMucName(MainApplication.MAIN_CONFERENCE_ROOMNAME);
 			this.username = getIntent().getStringExtra(Networks.KEY_USERNAME);
 			this.password = getIntent().getStringExtra(Networks.KEY_PASSWORD);
 			preformInitailLogin("jabber.org",5222);
@@ -77,7 +78,18 @@ public class MainApplication extends Activity {
 				// This is the user that will start off sending invites to other users
 				// A temporary arrangement where all clients wait around until the one user
 				// connects and invites them all to the conference
-				createMainMUCRoom();
+				try {
+					mainspace.createMUC(conn, username);
+				} catch (XMPPException e) {
+					Log.e(LOGTAG, "Failed to create the main MUC room.\nXMPPException error: " + 
+							e.getXMPPError().getCode());
+					Toast.makeText(this, "XMPPException error: " + e.getXMPPError().getCode(),
+			                Toast.LENGTH_LONG).show();
+					e.printStackTrace();
+					System.exit(0); // exit the system because the main conference 
+						// has not been created, so we are hosed here
+				}		
+				mainspace.inviteToMUC(allPeople);
 			}
 		}
 
@@ -150,49 +162,6 @@ public class MainApplication extends Activity {
 		Log.i(LOGTAG, "\tUser " + username + " successfully logged in? " 
 				+ (conn.isAuthenticated() ? "yes" : "no"));
 	} //end preformInitialLogin
-
-	
-	
-	/**
-	 * Call to create a new MUC room with the name specified by MainApplication.MAIN_CONFERENCE_ROOMNAME
-	 * After creating the room, this will invite all the people in the allPeople lsit
-	 * to the main MUC room.
-	 */
-	private void createMainMUCRoom() {
-		// To create a room
-        MultiUserChat muc = new MultiUserChat(conn, MainApplication.MAIN_CONFERENCE_ROOMNAME);
-        try {
-			muc.create(username);
-		} catch (XMPPException e) {
-			Log.e(LOGTAG, "XMPPException error: " + 
-					e.getXMPPError().getCode());
-			Toast.makeText(this, "XMPPException error: " + e.getXMPPError().getCode(),
-	                Toast.LENGTH_LONG).show();
-			e.printStackTrace();
-		}
-		
-		// Send invitation to invitees
-		for (Person inv : allPeople) {
-			String xmppID = inv.getXMPPid();
-			muc.invite(xmppID, MainApplication.REASON);
-		}
-		
-//		// Grant moderator access to all users
-//		try {
-//			Occupant[] members = (Occupant[]) muc.getParticipants().toArray();
-//			for (Occupant mem : members) {
-//				muc.grantModerator(mem.getNick());
-//			}
-//		} catch (XMPPException e) {
-//			Log.e(LOGTAG, "XMPPException error: " + 
-//					e.getXMPPError().getCode());
-//			Toast.makeText(this, "XMPPException error: " + e.getXMPPError().getCode(),
-//	                Toast.LENGTH_LONG).show();
-//			e.printStackTrace();
-//		}
-	}
-
-
 
 /**
  * Need to disconnect from the server, however this is called every time
@@ -370,6 +339,15 @@ public class MainApplication extends Activity {
 		bottomBar.invalidate();
 		// tell network that you created a private space
 		// and give it the muc name associated with the private space
+		try {
+			p.createMUC(conn, username);
+		} catch (XMPPException e) {
+			Log.e(LOGTAG, "XMPPException error: " + 
+					e.getXMPPError().getCode());
+			Toast.makeText(this, "XMPPException error: " + e.getXMPPError().getCode(),
+	                Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		}
 		sendCreateNewPrivateSpace(p.getMucName());
 	}
 	
@@ -397,8 +375,20 @@ public class MainApplication extends Activity {
 		bottomBar.invalidate();
 		PrivateSpaceView.currentSpaces.remove(pv);
 		PrivateSpaceView.privateSpaceCounter--;
+		Space s = pv.getSpace();
+		try {
+			s.removeUser(username);// remove yourself from the room
+				// deleting a private space on your app is the same as leaving it
+				// or saying "I don't want to be in this private space"
+		} catch (XMPPException e) {
+			Log.e(LOGTAG, "Failed to remove self from private space. XMPPException error: " + 
+					e.getXMPPError().getCode());
+			Toast.makeText(this, "XMPPException error: " + e.getXMPPError().getCode(),
+	                Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		}		
 		// Tell network that you are deleting this private space
-		sendDeleteNewPrivateSpace(pv.getId());
+//		sendDeleteNewPrivateSpace(pv.getId());
 	}
 	
 	/** If another person deleted a privatespace that you happened to be in, then delete
@@ -523,7 +513,8 @@ public class MainApplication extends Activity {
 	
 	/** If someone else created a new private space and added you to it */
 	public void receiveCreateNewPrivateSpace(String mucName){
-		// TODO Call from a listener in the network code
+		// TODO Call from a listener in the network code, this should be called after the xmpp client joins the chat
+		// when they received an invite
 		// Create a private space object on this client
 		PrivateSpace p = new PrivateSpace(this);
 		// set the muc name to what the private space's muc name is on the server
@@ -540,9 +531,7 @@ public class MainApplication extends Activity {
 	 * if you created a new PrivateSpace, then tell the network
 	 */
 	public void sendCreateNewPrivateSpace(String mucName) {
-		// Where do we send the name to?
-		// This method is called in createNewPrivateSpace() in class MainApplication
-		// TODO network team Send notification? set up new MUC?
+		
 	}
 	
 	/**
@@ -565,14 +554,14 @@ public class MainApplication extends Activity {
 		// Use network code to exit private space via destroying the room
 	}
 	/** If someone else added a person to the privateSpace you are involved in */
-	public void receiveAddUserToPrivateSpace(int PrivateSpaceID, Person user){
+	public void receiveAddUserToPrivateSpace(String  mucRoomName, Person user){
 		// TODO: This should be called by a listener in the network code which will receive an invite
+		PrivateSpaceView pview = PrivateSpaceView.getSpaceByID(mucRoomName);
+		pview.getSpace().forcedAdd(user);
 	}
 	/** You added a new person to the privateSpace, tell the network that you initiated this */
 	public void sendAddUserToPrivateSpace(Space space, Person user){
-		// this method is called in class Space method add(Person p)
-		// need to convert it to the int PrivateSpaceID or Space ID
-		// TODO network team
+		space.inviteToMUC(user);
 	}
 	/** If someone else deleted a person from a privatespace you were involved in */
 	public void receiveRemoveUserFromPrivateSpace(String mucName, String userName){
@@ -589,16 +578,22 @@ public class MainApplication extends Activity {
 		 */
 		PrivateSpaceView psv = PrivateSpaceView.getSpaceByID(mucName);
 		Space spaceToRemoveFrom = psv.getSpace();
-		// TODO this needs to call muc remove user or something along those lines,
-		// perhaps like below:
-		// spaceToRemoveFrom.getMuc().removeUser(user.getXMPPid());
-		
+		try {
+			spaceToRemoveFrom.removeUser(user.getXMPPid());
+		} catch (XMPPException e) {
+			Log.e(LOGTAG, "XMPPException error: " + 
+					e.getXMPPError().getCode());
+			Toast.makeText(this, "XMPPException error: " + e.getXMPPError().getCode(),
+	                Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		}		
 	}
 	
 	/** If you moved an icon around your privatespace, notify the network so can
 	 * adjust the sound locations */
 	public void updatePrivateSpace(Space space){
 		//TODO for network team
+		// TODO Call sound spacialization function
 		// this method called in class SpaceView method onTouchEvent() in ACTION_UP
 		// need to convert it to the int PrivateSpaceID or SpaceID
 	}

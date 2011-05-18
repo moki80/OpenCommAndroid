@@ -12,7 +12,7 @@ public class Person {
 		this.image = image;
 		this.xmppID = xmppID;
 		MainApplication.allPeople.add(this);
-		MainApplication.mainspace.add(this);
+		MainApplication.mainspace.forcedAdd(this);
 		MainApplication.id_to_person.put(xmppID, this);
 	}
 	

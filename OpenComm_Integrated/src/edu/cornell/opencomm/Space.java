@@ -1,16 +1,29 @@
 package edu.cornell.opencomm;
 
 import java.util.LinkedList;
+import java.util.List;
+
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.Occupant;
+
+import edu.cornell.opencomm.network.sp11.Networks;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 
 public class Space {
+	private static final String LOGTAG = "opencomm.Space";
 	SpaceView spaceView;
 	Context context;
 	LinkedList<PersonView> people;
-
+	MultiUserChat muc;
+	protected String mucName = "";
+	
 	public Space(Context c) {
 		context = c;
 		spaceView = new SpaceView(context, this);
@@ -36,7 +49,7 @@ public class Space {
 				55);
 		this.people.add(pv);
 		// tell the network
-		((MainApplication)context).sendAddUserToPrivateSpace(this, p);
+		this.inviteToMUC(p);
 	}
 	
 	/** Add a person to this space by putting in their icon because someone else
@@ -67,5 +80,74 @@ public class Space {
 		for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
 			p.draw(canvas);
 		}
+	}
+	
+	/**
+	 * @return the mucName where chat is held on the xmpp server
+	 */
+	public String getMucName() {
+		return mucName;
+	}
+
+	/**
+	 * @param mucName the mucName which is associated with this private space at the XMPP server
+	 */
+	public void setMucName(String mucName) {
+		this.mucName = mucName + Networks.SERVICE_NAME;
+		Log.i(LOGTAG,"Setting muc room name to: " + this.mucName);
+	}
+	
+	/**
+	 *  **Call Set MUC name before calling this method**
+	 * Create a MUC on the server with the room name that is stored in this class
+	 */
+	public void createMUC(XMPPConnection conn, String username) throws XMPPException {
+		Log.i(LOGTAG,"Creating MUC " + mucName + "\n conn="+conn+"\n user="+username);
+		muc = new MultiUserChat(conn, this.mucName);
+		muc.join(username);
+	}
+	
+	/**
+	 * Invite a list of people to the MUC which on the server represents this space
+	 * @param invitees
+	 * 		People to invite to the MUC
+	 */
+	public void inviteToMUC(List<Person> invitees){
+		// Send invitation to invitees
+		for (Person inv : invitees) {
+			inviteToMUC(inv);
+		}
+	}
+	
+	/**
+	 * Invites the single user to the MUC room
+	 * @param invitee
+	 */
+	public void inviteToMUC(Person invitee){
+		Log.i(LOGTAG,"Inviting " + invitee.getName() + " to room " + this.mucName);
+		String xmppID = invitee.getXMPPid();
+		muc.invite(xmppID, MainApplication.REASON);
+	}
+
+	/**
+	 * Kick a user from the multi-user chat that represents this space on the server
+	 * @param xmpPid
+	 * 		the xmpp-id for that user
+	 * @throws XMPPException 
+	 * 		thrown when a problem arises while kicking the user from the MUC
+	 */
+	public void removeUser(String xmpPid) throws XMPPException {
+		Log.i(LOGTAG,"Booting" + xmpPid + " from room: " + this.mucName);
+		muc.kickParticipant(xmpPid, "Someone doesn't like you.");
+	}
+	
+	/**
+	 * Destroy the room associated with this space, this will kick everyone from the room
+	 * @throws XMPPException
+	 * 		thrown if fails to destroy the room
+	 */
+	public void destroyRoom() throws XMPPException {
+		Log.i(LOGTAG,"Destroying muc room: " + this.mucName);
+		muc.destroy("The Reason of Destruction", "");
 	}
 }

@@ -1,5 +1,9 @@
 package edu.cornell.opencomm;
 
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+
 import android.content.Context;
 
 /**
@@ -16,7 +20,6 @@ public class PrivateSpace extends Space {
 	MainApplication activity = null;
 	static int numPrivateSpaces = 0;
 	int idNumber;
-	private String mucName = "";
 
 	public PrivateSpace(Context c) {
 		super(c);
@@ -35,6 +38,7 @@ public class PrivateSpace extends Space {
 		p.idNumber = this.idNumber;
 		p.psv = null;
 		p.mucName = this.mucName;
+		p.muc = this.muc;
 		return p;
 	}
 
@@ -53,19 +57,4 @@ public class PrivateSpace extends Space {
 	public int getID() {
 		return idNumber;
 	}
-
-	/**
-	 * @return the mucName where chat is held on the xmpp server
-	 */
-	public String getMucName() {
-		return mucName;
-	}
-
-	/**
-	 * @param mucName the mucName which is associated with this private space at the XMPP server
-	 */
-	public void setMucName(String mucName) {
-		this.mucName = mucName;
-	}
-
 }
