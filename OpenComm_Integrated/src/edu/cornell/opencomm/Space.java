@@ -3,18 +3,19 @@ package edu.cornell.opencomm;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.Form;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.muc.Occupant;
-
-import edu.cornell.opencomm.network.sp11.Networks;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
+import edu.cornell.opencomm.network.sp11.Networks;
 
 public class Space {
 	private static final String LOGTAG = "opencomm.Space";
@@ -105,6 +106,44 @@ public class Space {
 		Log.i(LOGTAG,"Creating MUC " + mucName + "\n conn="+conn+"\n user="+username);
 		muc = new MultiUserChat(conn, this.mucName);
 		muc.join(username);
+
+		/**
+		 * Add a listener to the MUC for this space which will by notified when
+		 * someone leaves/joins this room
+		 */
+//		muc.addParticipantListener(new PacketListener(){
+//			@Override
+//			public void processPacket(Packet packet) {
+//				processPresencePacket(packet); //handle elsewhere
+//			}
+//			
+//		});
+	}
+	
+	/**
+	 * The MUC object associated with this space has received an upadate saying someone has
+	 * joined/left the room, we need to update our list of people in the MUC to be
+	 * consistent with the server.
+	 * @param pres_in
+	 * 		The packet received by the presence packet filter.
+	 */
+	public void processPresencePacket(Packet pres_in){
+		org.jivesoftware.smack.packet.Presence pres = (org.jivesoftware.smack.packet.Presence)pres_in;
+		String from = pres.getFrom();
+		switch (pres.getType()){
+		case available:
+			// from has joined the chat.  They should be added to this space
+			// and shown in the GUI
+			Person p = MainApplication.id_to_person.get(from);
+			this.forcedAdd(p); // remove the person from this space. using force because network informed us
+			break;
+		case unavailable:
+			// from has left the chat, remove them from the private space
+			MainApplication.mainApp.forcedRemoveIcon(this, from);
+			break;
+		default:
+			Log.i(LOGTAG,"Recevied presence update I don't handle.");	
+		}
 	}
 	
 	/**

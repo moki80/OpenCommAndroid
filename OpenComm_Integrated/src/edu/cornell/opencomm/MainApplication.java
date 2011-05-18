@@ -37,6 +37,7 @@ public class MainApplication extends Activity {
 
 	// TODO: make mainspace static
 	public static Space mainspace = null;
+	public static MainApplication mainApp = null;
 	static Space space; // the space that you are updating
 	static LinkedList<Person> allPeople;
 	public static final String PS_ID = "edu.cornell.opencomm.which_ps";
@@ -56,7 +57,7 @@ public class MainApplication extends Activity {
 		// Create activity and make it listen to XML file
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		
 		// Spaceview is already specified in XML file
 		SpaceView spaceview = (SpaceView) findViewById(R.id.space_view);
 		/*
@@ -65,6 +66,9 @@ public class MainApplication extends Activity {
 		 * conversation
 		 */
 		if (mainspace == null) {
+			// Used later by network code to call methods which cannot be static
+			MainApplication.mainApp = this;
+			// create new space for the main space
 			space = new Space(this);
 			mainspace = space;
 			id_to_person = new HashMap<String,Person>();
