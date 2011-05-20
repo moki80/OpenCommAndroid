@@ -42,7 +42,7 @@ public class MainApplication extends Activity {
 	static LinkedList<Person> allPeople;
 	public static final String PS_ID = "edu.cornell.opencomm.which_ps";
 	public static final Object INITIAL_USER = "mucopencomm";
-	public static final String MAIN_CONFERENCE_ROOMNAME = "OpenCommTestMainConf";
+	public static final String MAIN_CONFERENCE_ROOMNAME = "OpenCommTest2MainConf";
 	public static final String REASON = "Testing GUI Invites";
 	public static HashMap<String,Person> id_to_person;
 	private String username;
@@ -165,6 +165,7 @@ public class MainApplication extends Activity {
 		// confirm that the connection has been established
 		Log.i(LOGTAG, "\tUser " + username + " successfully logged in? " 
 				+ (conn.isAuthenticated() ? "yes" : "no"));
+		
 	} //end preformInitialLogin
 
 /**
