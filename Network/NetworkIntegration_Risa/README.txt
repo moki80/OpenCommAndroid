@@ -177,6 +177,10 @@ Content:
 			e.printStackTrace();
 		}
 
+Alternatively:
+	-muc.join(username);
+	 muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
+
 ================================================================================
 ================================================================================
 

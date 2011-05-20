@@ -10,6 +10,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -103,21 +104,28 @@ public class Space {
 	 * Create a MUC on the server with the room name that is stored in this class
 	 */
 	public void createMUC(XMPPConnection conn, String username) throws XMPPException {
-		Log.i(LOGTAG,"Creating MUC " + mucName + "\n conn="+conn+"\n user="+username);
+		Log.i(LOGTAG,"Creating MUC " + mucName + "\n conn="+conn+"\n user="+username + "\nConnected to server ="
+				+( (conn != null && conn.isConnected()) ? "yes":"no") );
 		muc = new MultiUserChat(conn, this.mucName);
-		muc.join(username);
+		if (muc != null){
+			Log.i(LOGTAG,"Muc Created, muc room name ="+ muc.getRoom());
+			muc.join(username);
+			muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
+		}else{
+			Log.e(LOGTAG,"MUC not created because after trying the object was null");
+		}
 
 		/**
 		 * Add a listener to the MUC for this space which will by notified when
 		 * someone leaves/joins this room
 		 */
-//		muc.addParticipantListener(new PacketListener(){
-//			@Override
-//			public void processPacket(Packet packet) {
-//				processPresencePacket(packet); //handle elsewhere
-//			}
-//			
-//		});
+		muc.addParticipantListener(new PacketListener(){
+			@Override
+			public void processPacket(Packet packet) {
+				processPresencePacket(packet); //handle elsewhere
+			}
+			
+		});
 	}
 	
 	/**
@@ -128,6 +136,7 @@ public class Space {
 	 * 		The packet received by the presence packet filter.
 	 */
 	public void processPresencePacket(Packet pres_in){
+		Log.i(LOGTAG,"MUC + " + muc.getRoom() + " recieved a packet." + pres_in.toXML());
 		org.jivesoftware.smack.packet.Presence pres = (org.jivesoftware.smack.packet.Presence)pres_in;
 		String from = pres.getFrom();
 		switch (pres.getType()){
@@ -135,10 +144,12 @@ public class Space {
 			// from has joined the chat.  They should be added to this space
 			// and shown in the GUI
 			Person p = MainApplication.id_to_person.get(from);
+			Log.i(LOGTAG,"Person " + p.getName() + "("+p.getXMPPid()+")" + " joined " + muc.getRoom());
 			this.forcedAdd(p); // remove the person from this space. using force because network informed us
 			break;
 		case unavailable:
 			// from has left the chat, remove them from the private space
+			Log.i(LOGTAG,"Person with xmpp id " + "("+from+")" + " left the room " + muc.getRoom());
 			MainApplication.mainApp.forcedRemoveIcon(this, from);
 			break;
 		default:
@@ -165,7 +176,14 @@ public class Space {
 	public void inviteToMUC(Person invitee){
 		Log.i(LOGTAG,"Inviting " + invitee.getName() + " to room " + this.mucName);
 		String xmppID = invitee.getXMPPid();
-		muc.invite(xmppID, MainApplication.REASON);
+		if (muc != null){
+			Log.i(LOGTAG,"Room " + muc.getRoom() + " is joined =" + (muc.isJoined() ? "yes":"no"));
+			muc.invite(xmppID, MainApplication.REASON);	
+		}
+		else{
+			Log.e(LOGTAG,"Cannont invite person to room " + this.mucName + " because the muc object is null");
+		}
+		
 	}
 
 	/**
