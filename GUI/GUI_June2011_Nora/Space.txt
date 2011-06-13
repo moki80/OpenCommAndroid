@@ -1,0 +1,42 @@
+/** A Space is a chat room that holds a group of people who can talk to 
+ * one another. This is just the room object holding the data, it is displayed in a SpaceView */
+
+public class Space{
+	LinkedList<Person> allPeople; // The people who are in this Space
+	SpaceView screen; // The SpaceView object(UI screen) that shows this Space (room) on the UI screen
+    int spaceID; // the ID that the network will use to identify this space
+    boolean isMainSpace; // Is true if this is a mainspace and NOT a privateSpace
+    public static LinkedList<Space> allSpaces; // All the rooms that have been created
+    Person moderator; // the person who has the power to manage the PrivateSpace, this person has special priveleges
+	
+	/* Constructor: A completely NEW space
+     * isMainSpace is true if this is a mainspace, mainspaces should be 
+     * initiated in the beginning and should initialize allSpaces
+	 * 1) Initialize all variables - create a new 
+	 * 2) Create a new SpaceView object and pass this as a variable */
+	public Space(boolean isMainSpace, Person moderator){
+	}
+    
+    /* Constructor: An already existing privateSpace that YOU have just joined
+     * 1) existingPeople - list of people who are already in the privatespace
+     * 2) the ID of the privatespace so that the network can identify it with the others
+     * Make sure to still make a SpaceView object and pass the existingPeople in,
+     * also add this space to allSpaces */
+    public Space(LinkedList<Person> existingPeople, spaceID, Person moderator){
+    }
+	
+    /* Delete this private space from the static list of existing Spaces (allSpaces),
+     * however you cannot delete a mainspace */
+    public void deletePrivateSpace(PrivateSpace ps){
+    }
+    
+	/* Add this Person to this Space (room), also create a new icon (PersonView) for 
+     * add it to this Space's corresponding SpaceView */
+	public void addPerson(Person newPerson){
+	}
+    
+	/* Remove a Person from this Space (room), make sure to delete the icon (PersonView)
+     * from this Space's corresponding SpaceView*/
+	public void removePerson(Person badPerson){
+	}
+}

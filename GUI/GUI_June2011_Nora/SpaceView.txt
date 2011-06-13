@@ -1,0 +1,83 @@
+/* A SpaceView is the graphical representation of a space, aka the screen you see on the monitor
+ * showing all the icons of the people in the space. This view does not include the Main, Menu,
+ * Trash buttons, or bottom PrivateSpace bar */
+ 
+ public class SpaceView{
+    Space space; // The space that this SpaceView (screen) is representing
+    public static int screenWidth, screenHeight;
+    
+    // List of all the icons that should display on this SpaceView (screen)
+    // Does not include the YOUR (the user's) icon (unless you want it to, then you have to discuss)
+    LinkedList<PersonView> allIcons; 
+    
+    // The Spaceview that the PrivateSpace icon (that was tapped) represents
+    // for a preview, if none then null
+    SpaceView open_preview; 
+    
+    
+    /* Constructor: Create a screen for a NEW privatespace that is empty (except for you) 
+     * Initialize all variables */
+     public SpaceView(Space parent_space){
+        space = parent_space;
+        open_preview = false;
+        allIcons = new LinkedList<PersonView>();
+     }
+     
+     /* Constructor: Create a screen for an already existing privatespace
+     * Initialize all variables
+     * Add all the the icons of the people for htis space view, call addManyPeople()*/
+     public SpaceView(Space parent_space, LinkedList<Person> people){
+     }
+     
+     /* Person added to the space, therefore add that Person's icon to this SpaceView */
+     public addPerson(Person person){
+     }
+     
+      /* Person deleted from the space, therefore delete that Person's icon from this SpaceView */
+     public deletePerson(Person person){
+     }
+     
+     /* If you are joining an already existin privatesapce, then add all of their icons to this
+      * SpaceView */
+     public addManyPeople(LinkedList<Person> people){
+     }
+     
+     /* Draw everything on the screen including:
+      * 1) Background color
+      * 2) All icons (need loop, call the icon's draw function in class PersonView)
+      * 3) Preview (if not null), need to get icons from the SpaceView and draw them
+      */
+     protected void onDraw(Canvas canvas){
+     }
+     
+     
+     /* Handle Touch events... MANY cases to consider 
+      * A PS icon = private space icon, squares that represent another private space
+      * at the bottom bar of the gui 
+      * Only adding people to privatespaces and */
+     public boolean onTouchEvent(MotionEvent event){
+     /* Need to be able to do all of this:
+      * 1) Drag a person's icon around the screen (but only within screen
+      * and not past the buttons), make sure to notify network to update spatialization
+      * 2a) Highlight a person's icon by tapping once (later perhaps open miniprofile)
+      * 2b) Tap again on highlighted icon to unhighlight
+      * 3a) If icon dragged over PS button (but not yet released)
+      * then highlight the PS button, and open up a highlighted preview
+      * 3b) If icon released over PS button, then return icon to original position
+      * and show the icon added to the preview for a brief second.
+      * Need to notify network that added person to a privatespace
+      * 4a) Tap once on PS icon to highlight and open up preview (with icons of everybody
+      * in that private space
+      * 4b) Tap a second time on highlighted PS icon to open up that private space's screen 
+      * aka SpaceView
+      * 5) Tapping on an empty part of the screen unhighlights any highlighted item
+      */
+      
+      // Later...
+      /* 6) Circling multiple icons should draw a circle around multiple icons
+       * while drawing, and once released should highlight all encircled icons 
+       * 7) Be able to drag multiple highlighted icons as a unit 
+       */
+     }
+     
+ }

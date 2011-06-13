@@ -1,0 +1,6 @@
+/** Login Screen - an Activity on its own. The first part of the program that should start up 
+ * Should have logo, entries for username and password */
+public class Login extends Activity{
+	
+	/** Should initiate the Main Application */
+}
