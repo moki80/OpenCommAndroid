@@ -39,6 +39,22 @@ public Class PersonView{
     /* Draw this PersonView's image, draw darker (or brighter) if
      * this PersonView is highlighted */
     public void draw(Canvas canvas){
+        // TODO: copied form earlier code, might need some fixing
+        // This current version draws will draw the icon, and will draw
+        // a colored rectangle around the person's icon if selected
+        
+        
+        super.onDraw(canvas);
+		
+		if (selected) {
+			RectShape rect2 = new RectShape();
+			ShapeDrawable s = new ShapeDrawable(rect2);
+			s.getPaint().setColor(Color.YELLOW);
+			s.setBounds(x - 2, y - 2, x + w + 4, y + h + 4);
+			s.draw(canvas);
+		}
+		
+		canvas.drawBitmap(image, x, y, null);
     }
 		
 	// GETTERS

@@ -4,11 +4,11 @@
  
  public class SpaceView{
     Space space; // The space that this SpaceView (screen) is representing
-    public static int screenWidth, screenHeight;
+    public static int screenWidth=800, screenHeight=600;
     
     // List of all the icons that should display on this SpaceView (screen)
     // Does not include the YOUR (the user's) icon (unless you want it to, then you have to discuss)
-    LinkedList<PersonView> allIcons; 
+    LinkedList<PersonView> allIcons= new LinkedList<PersonView>(); 
     
     // The Spaceview that the PrivateSpace icon (that was tapped) represents
     // for a preview, if none then null
@@ -19,7 +19,7 @@
      * Initialize all variables */
      public SpaceView(Space parent_space){
         space = parent_space;
-        open_preview = false;
+        open_preview = null;
         allIcons = new LinkedList<PersonView>();
      }
      
@@ -27,19 +27,28 @@
      * Initialize all variables
      * Add all the the icons of the people for htis space view, call addManyPeople()*/
      public SpaceView(Space parent_space, LinkedList<Person> people){
+        space = parent_space;
+        open_preview = null;
+        addManyPeople(people);
+     }
+     
+     /* Add many people to this space, add all of their icons to the SpaceView */
+     public addManyPeople(LinkedList<Person> people){
+        for(Person p: people){
+            addPerson(p);
+        }
      }
      
      /* Person added to the space, therefore add that Person's icon to this SpaceView */
      public addPerson(Person person){
+        PersonView icon = person.getPersonView();
+        allIcons.add(icon);    
      }
      
       /* Person deleted from the space, therefore delete that Person's icon from this SpaceView */
      public deletePerson(Person person){
-     }
-     
-     /* If you are joining an already existin privatesapce, then add all of their icons to this
-      * SpaceView */
-     public addManyPeople(LinkedList<Person> people){
+        PersonView icon = person.getPersonView();
+        allIcons.remove(icon);
      }
      
      /* Draw everything on the screen including:
@@ -48,6 +57,27 @@
       * 3) Preview (if not null), need to get icons from the SpaceView and draw them
       */
      protected void onDraw(Canvas canvas){
+     
+        // TODO: copied this from old code, may have to fix
+        
+        
+        
+     
+     // if(canDraw>1)
+		// canDraw = PrivateSpaceView.currentSpaces.size();
+		if (canDraw == 2)
+			// if(icons.size()>1)
+			canvas.drawColor(getColor());
+
+		if (currPreview != null) {
+			PreviewView prev = new PreviewView(context);
+			prev.draw(canvas, currPreview);
+		}
+
+		for (PersonView p : icons) {
+			p.draw(canvas);
+		}
+     
      }
      
      
@@ -78,6 +108,102 @@
        * while drawing, and once released should highlight all encircled icons 
        * 7) Be able to drag multiple highlighted icons as a unit 
        */
+       
+       
+       
+       // TODO: copied this from old code- may have to fix
+       
+       
+       
+       int eventaction = event.getAction();
+		int mouseX = (int) event.getX();
+		int mouseY = (int) event.getY();
+
+		switch (eventaction) {
+		case MotionEvent.ACTION_DOWN:
+			selectedIcon = null;
+			for (PersonView icon : icons) {
+				if (icon.clickedInside(mouseX, mouseY)) {
+					selectedIcon = icon;
+					initialX = icon.getX();
+					initialY = icon.getY();
+				}
+			}
+			break;
+
+		case MotionEvent.ACTION_MOVE:
+			// If a person icon is selected, then move the icon to the current
+			// position
+			if (selectedIcon != null) {
+				selectedIcon.moved = true;
+				selectedIcon.setX(mouseX - (selectedIcon.getW() / 2));
+				selectedIcon.setY(mouseY - (selectedIcon.getH() / 2));
+
+				// if icon is dragged over private space, then highlight that
+				// private space icon
+				if (hoveredPrivSpace == null) {
+					for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
+						if (p.contains(mouseX, mouseY)) {
+							p.setHovered(true);
+							hoveredPrivSpace = p;
+						}
+					}
+				} else if (hoveredPrivSpace != null) {
+					if (!hoveredPrivSpace.contains(mouseX, mouseY)) {
+						hoveredPrivSpace.setHovered(false);
+						hoveredPrivSpace = null;
+					}
+				}
+			}
+			break;
+
+		case MotionEvent.ACTION_UP:
+			canDraw = PrivateSpaceView.currentSpaces.size();
+			/*
+			 * If you highlited an icon, then clicked on nothing on screen, it
+			 * should unhighlite all the other icons
+			 */
+			if (selectedIcon == null && mouseY < mainScreenH) {
+
+				for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
+					if (p.isSelected)
+						p.setSelected(false);
+
+				}
+			}
+			if (selectedIcon != null) {
+				// if you did not move the icon and just clicked it, then
+				// highlite it
+				if (!selectedIcon.moved) {
+					selectedIcon.changeSelected();
+				}
+				// if you did move the icon, then notify the network so it can update sound spatializatio
+				else{
+					((MainApplication)context).updatePrivateSpace(parent);
+				}
+				selectedIcon.moved = false;
+
+				for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
+					if (p.contains(mouseX, mouseY)) {
+
+						(p.getSpace()).add(selectedIcon.getPerson());
+						p.setSelected(false);
+						// canDraw++;
+					}
+				}
+				if (mouseY >= mainScreenH) {
+					selectedIcon.setX(initialX);
+					selectedIcon.setY(initialY);
+				}
+				selectedIcon = null;
+			}
+			break;
+		}
+		invalidate();
+		return true;
+       
+       
+       
      }
      
  }

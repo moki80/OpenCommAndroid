@@ -21,7 +21,8 @@ public Class Person{
 		2)Add this to linkedlist of all people created (allPeople)
 		3)Add this to the MainSpace's list of people 
 		4)Add (username, person) and (nickname, person) pairs to hashmap
-		5)Create an icon (PersonView) for this person and pass in this and imageInt */
+		5)Create an icon (PersonView) for this person and pass in this and imageInt,
+          pass in -1 for imageInt if you do not want to input an imageInt yet*/
 	public Person(String username, String nickname, int imageInt, String description){
         // (1)
         this.username = username;
@@ -35,7 +36,8 @@ public Class Person{
         username_to_person.put(username, this);
         nickname_to_person.put(nickname, this);
         // (5)
-        icon = new PersonView(this,imageInt);   
+        if (imageInt!=-1)
+            icon = new PersonView(this,imageInt);   
 	}
 	
 	// GETTERS
