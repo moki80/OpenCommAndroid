@@ -1,3 +1,7 @@
+package edu.cornell.opencomm;
+
+import java.util.LinkedList;
+
 /** The MainApplication handles and manages the PrivateSpaces for every 
  * Person involved. Receives its notifications from the GUI, and then
  * updates the data of the private space, and talks with the network. */
@@ -10,7 +14,7 @@ public class MainApplication{
     // the person object that represents YOU, the user of this program 
     public static Person user_you;
     // The space that is currently on the screen
-    public static current_space;
+    public static Space current_space;
     
     /** Start the application! You are given the user's id (username), so...
      * 1) Connect with network
@@ -42,10 +46,10 @@ public class MainApplication{
     /** YOU created a new PrivateSpace, therefore can call createPrivateSpace
      * however in addition need to notify the network of the newly created
      * Private Space */
-    public void init_createPrivateSpace(boolean isMainSpace){
+    public Space init_createPrivateSpace(boolean isMainSpace){
         // TODO network: notify network of new private space to create
         // TODO network: Network should return a spaceID and store it in this variable
-        int newSpaceID;
+        int newSpaceID=0;
         return createPrivateSpace(true, isMainSpace, null, newSpaceID, user_you);
     }
     
@@ -61,7 +65,7 @@ public class MainApplication{
         if (ICreatedThis) // then is a completely new privatespace
             return new Space(isMainSpace, spaceID, moderator);
         else
-            return new Space(existing_buddies, spaceID, moderator)
+            return new Space(existing_buddies, spaceID, moderator);
     }
     
     /** YOU remove an existing PrivateSpace, with the intention of deleting this 
@@ -84,27 +88,27 @@ public class MainApplication{
     /** Need to add the new PrivateSpace button to the bottom GUI by altering the XML code */
     public void addPrivateSpaceButton(PrivateSpaceView psv){
         // TODO: Copied from earlier code, might need some fixing
-        
+        /*
         LinearLayout bottomBar = (LinearLayout) findViewById(R.id.privateSpaceLinearLayout);
 		PrivateSpace p = new PrivateSpace(this);
 		PrivateSpaceView pv = p.getPrivateSpaceView();
 		pv.setLayoutParams(PSparams);
 		pv.setMinimumWidth(50);
 		bottomBar.addView(pv);
-		bottomBar.invalidate();
+		bottomBar.invalidate(); */
     }
     
     /** Need to delete the this PrivateSpace button to the bottom GUI by altering the XML code */
     public void delPrivateSpaceButton(PrivateSpaceView psv){
         // TODO: copied form earlier code, might need some fixing
         
-        LinearLayout bottomBar = (LinearLayout) findViewById(R.id.privateSpaceLinearLayout);
+      /*  LinearLayout bottomBar = (LinearLayout) findViewById(R.id.privateSpaceLinearLayout);
 		bottomBar.removeView(pv);
 		bottomBar.invalidate();
 		PrivateSpaceView.currentSpaces.remove(pv);
 		PrivateSpaceView.privateSpaceCounter--;
 		// Tell network that you are deleting this private space
-		sendDeleteNewPrivateSpace(pv.getId());
+		sendDeleteNewPrivateSpace(pv.getId()); */
     }
     
     /** YOU invited this person to the PrivateSpace, so invite them over the network, you must 
@@ -187,7 +191,7 @@ public class MainApplication{
 		// TODO: the add button is temporary
 
 		// set listener to main button
-		Button mainButton = (Button) findViewById(R.id.main_button);
+	/*	Button mainButton = (Button) findViewById(R.id.main_button);
 		mainButton.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View view, MotionEvent evt) {
 				switch (evt.getAction()) {
@@ -266,7 +270,7 @@ public class MainApplication{
 				}
 				return false;
 			}
-		});
+		}); */
 	}
     
 }

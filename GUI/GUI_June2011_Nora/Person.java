@@ -1,6 +1,11 @@
+package edu.cornell.opencomm;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+
 /* An object representing a user who is taking part in the conversation */
 
-public Class Person{
+public class Person{
 	/** The Essentials */
 	String username; // The username the user chose, will show up on screen, is the XMPP id as well
 	String nickname; // The nickname the user chose, needed for the network service

@@ -1,7 +1,16 @@
+package edu.cornell.opencomm;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
+
 /** The graphical icon representing a user (Person object) that will show up
  * on the user interface screen */
  
-public Class PersonView{
+public class PersonView{
 	Person person; // The person object this icon is representing
 	int x, y; // The position of this icon (Top-Left corner)
 	Bitmap image; // The actual image that will show on the user screen
@@ -17,21 +26,22 @@ public Class PersonView{
 	 */
 	public PersonView(Person person, int imageID){
         // (1)
-        this.person = person
+        this.person = person;
         this.isSelected = false;
         // (3)
         BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inJustDecodeBounds = true;
 		this.image = BitmapFactory.decodeResource(context.getResources(), imageID);
         // (2)
-        this.x = Math.rand()*SpaceView.screenW - image.width;
-        this.y = Math.rand()*SpaceView.screenH - image.height;
+		double x = Math.random();
+        this.x = (int)(Math.random()*SpaceView.screenWidth - image.getWidth());
+        this.y = (int)(Math.random()*SpaceView.screenHeight - image.getHeight());
 	}
     
     /* Return true if the mouseX and mouseY parameters are within this PersonView's 
      * area onscreen. Used to see if the user tapped on the icon */
     public boolean clickedInside(int mouseX, int mouseY){
-        if(mouseX>=x && mouseX<=x+image.width && mouseY>=y && mouseY<=y+image.height)
+        if(mouseX>=x && mouseX<=x+image.getWidth() && mouseY>=y && mouseY<=y+image.getHeight())
             return true;
         return false;
     }
@@ -46,7 +56,7 @@ public Class PersonView{
         
         super.onDraw(canvas);
 		
-		if (selected) {
+		if (isSelected) {
 			RectShape rect2 = new RectShape();
 			ShapeDrawable s = new ShapeDrawable(rect2);
 			s.getPaint().setColor(Color.YELLOW);
@@ -76,7 +86,7 @@ public Class PersonView{
         return image;
 	}
 	/* Returns true if this icon has been highlighted by the user */
-	public getIsSelected(){
+	public boolean getIsSelected(){
         return isSelected;
 	}
 	
@@ -96,8 +106,8 @@ public Class PersonView{
 		opts.inJustDecodeBounds = true;
 		this.image = BitmapFactory.decodeResource(context.getResources(), imageID);
 	}
-	/* Change whether icon is highlighted or not (from user tapping the icon
+	/* Change whether icon is highlighted or not (from user tapping the icon) */
 	public void setIsSelected(boolean IsIt){
         isSelected = IsIt;
-	}
+	} 
 }

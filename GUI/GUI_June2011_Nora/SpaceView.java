@@ -1,3 +1,9 @@
+package edu.cornell.opencomm;
+
+import java.util.LinkedList;
+
+import android.view.MotionEvent;
+
 /* A SpaceView is the graphical representation of a space, aka the screen you see on the monitor
  * showing all the icons of the people in the space. This view does not include the Main, Menu,
  * Trash buttons, or bottom PrivateSpace bar */
@@ -33,20 +39,20 @@
      }
      
      /* Add many people to this space, add all of their icons to the SpaceView */
-     public addManyPeople(LinkedList<Person> people){
+     public void addManyPeople(LinkedList<Person> people){
         for(Person p: people){
             addPerson(p);
         }
      }
      
      /* Person added to the space, therefore add that Person's icon to this SpaceView */
-     public addPerson(Person person){
+     public void addPerson(Person person){
         PersonView icon = person.getPersonView();
         allIcons.add(icon);    
      }
      
       /* Person deleted from the space, therefore delete that Person's icon from this SpaceView */
-     public deletePerson(Person person){
+     public void deletePerson(Person person){
         PersonView icon = person.getPersonView();
         allIcons.remove(icon);
      }
@@ -56,7 +62,7 @@
       * 2) All icons (need loop, call the icon's draw function in class PersonView)
       * 3) Preview (if not null), need to get icons from the SpaceView and draw them
       */
-     protected void onDraw(Canvas canvas){
+   /*  protected void onDraw(Canvas canvas){
      
         // TODO: copied this from old code, may have to fix
         
@@ -77,8 +83,8 @@
 		for (PersonView p : icons) {
 			p.draw(canvas);
 		}
-     
-     }
+      
+     }*/
      
      
      /* Handle Touch events... MANY cases to consider 
@@ -113,7 +119,7 @@
        
        // TODO: copied this from old code- may have to fix
        
-       
+       /*
        
        int eventaction = event.getAction();
 		int mouseX = (int) event.getX();
@@ -163,7 +169,7 @@
 			 * If you highlited an icon, then clicked on nothing on screen, it
 			 * should unhighlite all the other icons
 			 */
-			if (selectedIcon == null && mouseY < mainScreenH) {
+		/*	if (selectedIcon == null && mouseY < mainScreenH) {
 
 				for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
 					if (p.isSelected)
@@ -199,7 +205,7 @@
 			}
 			break;
 		}
-		invalidate();
+		invalidate();*/
 		return true;
        
        

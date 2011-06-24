@@ -1,3 +1,7 @@
+package edu.cornell.opencomm;
+
+import java.util.LinkedList;
+
 /** A Space is a chat room that holds a group of people who can talk to 
  * one another. This is just the room object holding the data, it is displayed in a SpaceView */
 
@@ -37,7 +41,7 @@ public class Space{
      * 2) the ID of the privatespace so that the network can identify it with the others
      * Make sure to still make a SpaceView object and pass the existingPeople in,
      * also add this space to allSpaces. Don't forget to set up a PrivateSpaceView */
-    public Space(LinkedList<Person> existingPeople, spaceID, Person moderator){
+    public Space(LinkedList<Person> existingPeople, int spaceID, Person moderator){
         allPeople = existingPeople;
         this.spaceID = spaceID;
         isMainSpace = false;
@@ -106,4 +110,5 @@ public class Space{
         return bottomIcon;
     }
 }
+
 

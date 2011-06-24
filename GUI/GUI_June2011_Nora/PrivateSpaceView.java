@@ -1,10 +1,17 @@
+package edu.cornell.opencomm;
+
+import java.util.LinkedList;
+
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
+
 /** An icon representing a private space room, will appear at the bottom scrollable bar of the screen */ 
 public class PrivateSpaceView{
     Space space; // the private space that this icon represents
     boolean isSelected; // if this is true, then the icon should appear highlighted/darkened
     boolean isHighlighted; // if this is true, should also provide some feedback
     // the list of all current privatespace icons
-    public static LinkedList<PrivateSpaceView> allPSIcons= new LinkedList<PrivateSpaceView> allPSIcons; 
+    public static LinkedList<PrivateSpaceView> allPSIcons= new LinkedList<PrivateSpaceView>(); 
     
     /** Initialize all variables 
      * Set up a touch listener (call init) */
@@ -124,6 +131,6 @@ public class PrivateSpaceView{
      * for cases where you drag a person's icon over the privatespace icon and you
      * want to see some feedback */
     public void setHighlighted(boolean highlighted){
-        isHighlighted = highlighted
+        isHighlighted = highlighted;
     }
 }
