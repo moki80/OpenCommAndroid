@@ -42,7 +42,8 @@ public class Person{
         nickname_to_person.put(nickname, this);
         // (5)
         if (imageInt!=-1)
-            icon = new PersonView(this,imageInt);   
+        	;
+            //icon = new PersonView(this,imageInt);    //TODO put back
 	}
 	
 	// GETTERS
@@ -74,7 +75,8 @@ public class Person{
 	}
 	/* Change the user's nickname */
 	public void setNickname(String new_nickname){
-	}   nickname = new_nickname;
+	   nickname = new_nickname;
+	}
 	/* Change the user's description */
 	public void setDescription(String new_description){
         description = new_description;

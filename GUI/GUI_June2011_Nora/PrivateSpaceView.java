@@ -26,13 +26,13 @@ public class PrivateSpaceView{
      * to add this button to the XML and can only be done in the MainApplication class */
     public void addThisPSView(){
         allPSIcons.add(this);
-        addPrivateSpaceButton(this);
+       // addPrivateSpaceButton(this); // TODO: put back!
     }
     
     /** Delete this PrivateSpace Icon */
     public void deleteThisPSView(){
         allPSIcons.remove(this);
-        delPrivateSpaceButton(this);
+        //delPrivateSpaceButton(this); // TODO: put back!
     }
     
     /** Set up a touch listener that will adjust the selections and highlights according
@@ -74,7 +74,10 @@ public class PrivateSpaceView{
 
     /** Draw this icon, draw darker (or brighter) if
      * this PrivateSpaceView is highlighted or selected */
-    public void draw(Canvas canvas){
+  
+    // commented out temporarilty to avoid errors
+    
+    /* public void draw(Canvas canvas){
     
     // TODO: Copied from old code, this particular version will draw a square for the PS icon
     // and then will fill in the square if highlighted or selected with color
@@ -105,7 +108,7 @@ public class PrivateSpaceView{
 		} else
 			showPreview = true;
     
-    }
+    } */
     
     // GETTERS
     public Space getSpace(){

@@ -1,16 +1,19 @@
 package edu.cornell.opencomm;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
+import android.widget.ImageButton;
 
 /** The graphical icon representing a user (Person object) that will show up
  * on the user interface screen */
  
-public class PersonView{
+public class PersonView extends ImageButton{
+	Context context; // dummy for now
 	Person person; // The person object this icon is representing
 	int x, y; // The position of this icon (Top-Left corner)
 	Bitmap image; // The actual image that will show on the user screen
@@ -24,7 +27,8 @@ public class PersonView{
 	 * 2)Decide positions of image (x,y)
 	 * 3)Create Bitmap image from imageID
 	 */
-	public PersonView(Person person, int imageID){
+	public PersonView(Context context, Person person, int imageID){
+		super(context); // blahblahblah dummy
         // (1)
         this.person = person;
         this.isSelected = false;
@@ -60,6 +64,7 @@ public class PersonView{
 			RectShape rect2 = new RectShape();
 			ShapeDrawable s = new ShapeDrawable(rect2);
 			s.getPaint().setColor(Color.YELLOW);
+			int w=10, h=10;
 			s.setBounds(x - 2, y - 2, x + w + 4, y + h + 4);
 			s.draw(canvas);
 		}
