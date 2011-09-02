@@ -1,41 +1,64 @@
 package edu.cornell.opencomm;
 
 import java.util.LinkedList;
-
+import android.content.Context;
+import android.graphics.Canvas;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.util.Log;
 
 /* A SpaceView is the graphical representation of a space, aka the screen you see on the monitor
- * showing all the icons of the people in the space. This view does not include the Main, Menu,
- * Trash buttons, or bottom PrivateSpace bar */
+ * showing all the icons of the people in the space (above the privatespace bar). 
+ * This view does not include the Main, Menu, Trash buttons, or bottom PrivateSpace bar.
+ * Your icon will not show up on screen */
  
- public class SpaceView{
-    Space space; // The space that this SpaceView (screen) is representing
-    public static int screenWidth=800, screenHeight=600;
+ public class SpaceView extends LinearLayout{
+	private static String LOG_TAG="OC_SpaceView"; // for error checking
+	private Context context;
+	public static int screenWidth=315, screenHeight=365; // the size of the spaceview (the area above the privatespace bar)
     
-    // List of all the icons that should display on this SpaceView (screen)
-    // Does not include the YOUR (the user's) icon (unless you want it to, then you have to discuss)
-    LinkedList<PersonView> allIcons= new LinkedList<PersonView>(); 
+	Space space; // The space that this SpaceView (screen) is representing
+    public LinkedList<PersonView> allIcons;// List of all the icons that should display on this SpaceView (screen)
+    PrivateSpaceView open_preview=null; // The PrivateSpaceView (PS icon at bottom bar) whose preview is open
     
-    // The Spaceview that the PrivateSpace icon (that was tapped) represents
-    // for a preview, if none then null
-    SpaceView open_preview; 
+    /** Temporary variables used in the onTouchEventMethods */
+    public PersonView selectedIcon; 
+    public int initialX, initialY;
+    PrivateSpaceView hoveredPrivSpace= null;
     
+    
+    /* Constructor: This one is used by the XML file to automatically generate
+     * a SpaceView
+     */
+    public SpaceView(Context context, AttributeSet attrs){
+    	super(context, attrs);
+    	this.context = context;
+    	setFocusable(true);
+    	setFocusableInTouchMode(true);
+    	Log.v(LOG_TAG, "Made SpaceView for XML file");
+    	Log.v(LOG_TAG, "New allIcons attri");
+    	allIcons = new LinkedList<PersonView>();
+    }
     
     /* Constructor: Create a screen for a NEW privatespace that is empty (except for you) 
      * Initialize all variables */
-     public SpaceView(Space parent_space){
+     public SpaceView(Context context, Space parent_space){
+    	super(context);
+    	this.context = context;
         space = parent_space;
-        open_preview = null;
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        Log.v(LOG_TAG, "Made SpaceView for a self-created space");
+        Log.v(LOG_TAG, "New allIcons normal");
         allIcons = new LinkedList<PersonView>();
      }
      
-     /* Constructor: Create a screen for an already existing privatespace
-     * Initialize all variables
-     * Add all the the icons of the people for htis space view, call addManyPeople()*/
-     public SpaceView(Space parent_space, LinkedList<Person> people){
-        space = parent_space;
-        open_preview = null;
-        addManyPeople(people);
+     /* Manually set the space that this SpaceView corresponds to (used in conjunction with
+      * the constructor for the XMl file */
+     public void setSpace(Space space){
+    	 this.space = space;
      }
      
      /* Add many people to this space, add all of their icons to the SpaceView */
@@ -44,17 +67,45 @@ import android.view.MotionEvent;
             addPerson(p);
         }
      }
-     
-     /* Person added to the space, therefore add that Person's icon to this SpaceView */
+   
+     /* Person added to the space, therefore create a new icon (PersonView) for this person
+      * and add it to this spaceview */
      public void addPerson(Person person){
-        PersonView icon = person.getPersonView();
+    	PersonView icon = new PersonView(context, person, person.getImage());
         allIcons.add(icon);    
+        invalidate();
      }
      
       /* Person deleted from the space, therefore delete that Person's icon from this SpaceView */
      public void deletePerson(Person person){
-        PersonView icon = person.getPersonView();
-        allIcons.remove(icon);
+    	 PersonView found_icon = null;
+    	 int counter = 0;
+    	 while(found_icon==null && counter<allIcons.size()){
+    		 if(allIcons.get(counter).getPerson()==person)
+    			 found_icon = allIcons.get(counter);
+    		 counter++;
+    	 }
+    	 if(found_icon!=null)
+    		 allIcons.remove(found_icon);
+    	 invalidate();
+     }
+     
+     //GETTERS
+     
+     /* Get the main background color */
+     private int getColor(){
+    	 return R.color.main_background;
+     }
+     /* Get the list of all Icons shown in this spaceview */
+     public LinkedList<PersonView> getAllIcons(){
+    	 return allIcons;
+     }
+     /* Get the Space that this SpaceView is representing */
+     public Space getSpace(){
+    	 return space;
+     }
+     public MainApplication getActivity(){
+    	 return (MainApplication)context;
      }
      
      /* Draw everything on the screen including:
@@ -62,29 +113,18 @@ import android.view.MotionEvent;
       * 2) All icons (need loop, call the icon's draw function in class PersonView)
       * 3) Preview (if not null), need to get icons from the SpaceView and draw them
       */
-   /*  protected void onDraw(Canvas canvas){
-     
-        // TODO: copied this from old code, may have to fix
-        
-        
-        
-     
-     // if(canDraw>1)
-		// canDraw = PrivateSpaceView.currentSpaces.size();
-		if (canDraw == 2)
-			// if(icons.size()>1)
-			canvas.drawColor(getColor());
-
-		if (currPreview != null) {
-			PreviewView prev = new PreviewView(context);
-			prev.draw(canvas, currPreview);
-		}
-
-		for (PersonView p : icons) {
-			p.draw(canvas);
-		}
-      
-     }*/
+     protected void onDraw(Canvas canvas){
+    	 //(1)
+    	 canvas.drawColor(getColor());
+    	 //(2)
+    	 for (PersonView p : allIcons)
+    		 if(p.getPerson()!=MainApplication.user_you)
+    			 p.draw(canvas);
+    	 //(3) 
+    	 if(open_preview!=null){
+    		 //TODO Nora
+    	 }
+     }
      
      
      /* Handle Touch events... MANY cases to consider 
@@ -95,14 +135,13 @@ import android.view.MotionEvent;
      /* Need to be able to do all of this:
       * 1) Drag a person's icon around the screen (but only within screen
       * and not past the buttons), make sure to notify network to update spatialization
-      * 2a) Highlight a person's icon by tapping once (later perhaps open miniprofile)
-      * 2b) Tap again on highlighted icon to unhighlight
+      * 2) Highlight a person's icon by tapping once (later perhaps open miniprofile)
       * 3a) If icon dragged over PS button (but not yet released)
-      * then highlight the PS button, and open up a highlighted preview
+      * then highlight the PS button, and TODO open up a highlighted preview
       * 3b) If icon released over PS button, then return icon to original position
       * and show the icon added to the preview for a brief second.
       * Need to notify network that added person to a privatespace
-      * 4a) Tap once on PS icon to highlight and open up preview (with icons of everybody
+      * 4a) TODO Tap once on PS icon to highlight and open up preview (with icons of everybody
       * in that private space
       * 4b) Tap a second time on highlighted PS icon to open up that private space's screen 
       * aka SpaceView
@@ -117,10 +156,6 @@ import android.view.MotionEvent;
        
        
        
-       // TODO: copied this from old code- may have to fix
-       
-       /*
-       
        int eventaction = event.getAction();
 		int mouseX = (int) event.getX();
 		int mouseY = (int) event.getY();
@@ -128,7 +163,7 @@ import android.view.MotionEvent;
 		switch (eventaction) {
 		case MotionEvent.ACTION_DOWN:
 			selectedIcon = null;
-			for (PersonView icon : icons) {
+			for (PersonView icon : allIcons) {
 				if (icon.clickedInside(mouseX, mouseY)) {
 					selectedIcon = icon;
 					initialX = icon.getX();
@@ -141,63 +176,60 @@ import android.view.MotionEvent;
 			// If a person icon is selected, then move the icon to the current
 			// position
 			if (selectedIcon != null) {
-				selectedIcon.moved = true;
-				selectedIcon.setX(mouseX - (selectedIcon.getW() / 2));
-				selectedIcon.setY(mouseY - (selectedIcon.getH() / 2));
+				selectedIcon.setMoved(true);
+				selectedIcon.setX(mouseX - (selectedIcon.getImage().getWidth() / 2));
+				selectedIcon.setY(mouseY - (selectedIcon.getImage().getHeight() / 2));
 
 				// if icon is dragged over private space, then highlight that
 				// private space icon
 				if (hoveredPrivSpace == null) {
-					for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
+					for (PrivateSpaceView p : PrivateSpaceView.allPSIcons) {
 						if (p.contains(mouseX, mouseY)) {
-							p.setHovered(true);
+							//p.setHovered(true);
+							p.setHighlighted(true);
 							hoveredPrivSpace = p;
 						}
 					}
 				} else if (hoveredPrivSpace != null) {
 					if (!hoveredPrivSpace.contains(mouseX, mouseY)) {
-						hoveredPrivSpace.setHovered(false);
+						hoveredPrivSpace.setHighlighted(false);
 						hoveredPrivSpace = null;
 					}
-				}
+				} 
 			}
+			
+			
 			break;
 
 		case MotionEvent.ACTION_UP:
-			canDraw = PrivateSpaceView.currentSpaces.size();
 			/*
 			 * If you highlited an icon, then clicked on nothing on screen, it
-			 * should unhighlite all the other icons
+			 * should unhighlite all the other icons and unhighlight all the PrivateSpaceView icons
 			 */
-		/*	if (selectedIcon == null && mouseY < mainScreenH) {
-
-				for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
-					if (p.isSelected)
-						p.setSelected(false);
-
+			if (selectedIcon == null && mouseY < screenHeight) {
+				for(PersonView p : allIcons){
+					if(p.getIsSelected()){
+						p.setIsSelected(false);
+						Log.v(LOG_TAG, "Setting " + p + " to false");
+					}
+				}
+				for(PrivateSpaceView icon: PrivateSpaceView.allPSIcons){
+					icon.setSelected(false);
 				}
 			}
 			if (selectedIcon != null) {
 				// if you did not move the icon and just clicked it, then
-				// highlite it
-				if (!selectedIcon.moved) {
-					selectedIcon.changeSelected();
+				// highlite it, or unhighlite it if already highlited
+				if (!selectedIcon.getMoved()) {
+					selectedIcon.toggleSelected();
 				}
-				// if you did move the icon, then notify the network so it can update sound spatializatio
+				// if you did move the icon, then notify the network so it can update sound spatialization
 				else{
-					((MainApplication)context).updatePrivateSpace(parent);
+					((MainApplication)context).movedPersonIcon(space, selectedIcon, mouseX, mouseY);
 				}
-				selectedIcon.moved = false;
-
-				for (PrivateSpaceView p : PrivateSpaceView.currentSpaces) {
-					if (p.contains(mouseX, mouseY)) {
-
-						(p.getSpace()).add(selectedIcon.getPerson());
-						p.setSelected(false);
-						// canDraw++;
-					}
-				}
-				if (mouseY >= mainScreenH) {
+				selectedIcon.setMoved(false);
+				// if released icon over the privatespace bar, then move icon back to original position
+				if (mouseY >= screenHeight) {
 					selectedIcon.setX(initialX);
 					selectedIcon.setY(initialY);
 				}
@@ -205,7 +237,7 @@ import android.view.MotionEvent;
 			}
 			break;
 		}
-		invalidate();*/
+		invalidate();
 		return true;
        
        
