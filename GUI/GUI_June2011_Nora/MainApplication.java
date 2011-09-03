@@ -3,6 +3,7 @@ package edu.cornell.opencomm;
 import java.util.LinkedList;
 import android.app.Activity;
 import android.os.Bundle;
+import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public class MainApplication extends Activity{
     public static LinkedList allBuddies; // Your buddy list! Has been previously saved from the network 	
     public static Person user_you;// the person object that is YOU, the user of this program 
     public static Space mainspace= null; // the official mainSpace, the one space that has EVERYBODY in it
-    public static Space current_space;// The space that is currently on the screen
+    public static SpaceView screen; // the screen that shows all of the icons 
     
     public static String username=""; // the username of this account
     public static String password=""; // the password to this account TODO make it so that you can sign in and it saves this
@@ -69,23 +70,22 @@ public class MainApplication extends Activity{
         password=start_intent.getStringExtra("password");
         Log.v(LOG_TAG, "username is " + username);
         Log.v(LOG_TAG, "password is " + password);
+        
         // The spaceview already created for you in the XML file, so retrieve it
-        SpaceView spaceview = (SpaceView)findViewById(R.id.space_view);
+        screen = (SpaceView)findViewById(R.id.space_view);
         
         // (1) Create a mainspace, put yourself in it
         if (mainspace == null){
         	// YOU are the moderator of this new space
-        	user_you = new Person(username, "noratheexplora", R.drawable.question, "I'm awesome!"); // -1 for image means no image
+        	user_you = new Person(username, "noratheexplora", R.drawable.question, "I'm awesome!"); 
         	mainspace = init_createPrivateSpace(true);
-        	current_space = mainspace;
-        	current_space.addSpaceView(spaceview);
-        	spaceview.setSpace(current_space);
+        	screen.setSpace(mainspace);
+        	mainspace.setScreenOn(true);
         	        	
         // (2) TODO Ask Risa, need to talk about choosing ppl for buddy list
         // for now just initialize a set of people in the chat
         	allBuddies = new LinkedList<Person>();
         	addPerson(mainspace, user_you);
-        	//setModerator(mainspace, user_you);
         	// now pretend like you chose these people to be in your buddylist
         	init_addPerson(mainspace, nora);
         	Log.v("LOG_TAG", "nora's image id is " + nora.getImage());
@@ -93,20 +93,6 @@ public class MainApplication extends Activity{
         	init_addPerson(mainspace, risa);
         	init_addPerson(mainspace, makoto);
         }
-        else{
-        	int ID = getIntent().getIntExtra(PS_ID, -1);
-        	for(PrivateSpaceView pv: PrivateSpaceView.allPSIcons){
-        		addPrivateSpaceButton(pv);
-        		//addPrivateSpaceButton(PrivateSpaceView psv);
-        		//createPrivateSpaceIcon(pv);
-        		/*Space p = (Space)(pv.getSpace());
-        		if(p.getSpaceID() == ID){
-        			space = p;
-        			p.setActivity(this);
-        		} */
-        	} 
-        } 
-        
         // (3)
         initializeButtons();
     }
@@ -192,53 +178,37 @@ public class MainApplication extends Activity{
         SpaceToDelete.deletePrivateSpace();
     }
     
-    public void openNewPSActivity(Space s){
-    	Intent intent = new Intent(MainApplication.this, MainApplication.class);
-    	int PSid = s.getSpaceID();
-    	intent.putExtra(PS_ID, PSid);
-    	startActivity(intent);
-    }
-    
-    public void restartPSActivity(Space s){
-    	if(s.getSpaceView()!=null){
-    		Intent intent = (s.getSpaceView().getActivity()).getIntent();
-        	startActivity(intent);
-        	finish();
-    	}
+    /** Change the space whose contents the screen (spaceview) is showing. 
+     * Need to notify network of this change so that it can adjust sound   
+     */
+    public void changeSpace(Space s){
+    	SpaceView spaceView = (SpaceView)findViewById(R.id.space_view);
+    	spaceView.changeSpace(s);
+    	s.setScreenOn(true);
+    	/* TODO network:
+    	 * 1) Adjust sound in network (if you want the space onscreen to be louder than other for example)
+    	 */
     }
     
     /** Need to add the new PrivateSpace button to the bottom GUI by altering the XML code */
     public void addPrivateSpaceButton(PrivateSpaceView psv){
     	Log.v(LOG_TAG, "Adding a PSButton");
-        // TODO: Copied from earlier code, might need some fixing
         
         LinearLayout bottomBar = (LinearLayout) findViewById(R.id.privateSpaceLinearLayout);
 		psv.setLayoutParams(PSparams);
 		psv.setMinimumWidth(50);
 		bottomBar.addView(psv);
 		bottomBar.invalidate(); 
-		/* Original code
-		 LinearLayout bottomBar = (LinearLayout) findViewById(R.id.privateSpaceLinearLayout);
-			PrivateSpace p = new PrivateSpace(this);
-			PrivateSpaceView pv = p.getPrivateSpaceView();
-			pv.setLayoutParams(PSparams);
-			pv.setMinimumWidth(50);
-			bottomBar.addView(pv);
-			bottomBar.invalidate(); */
     }
     
     /** Need to delete the this PrivateSpace button to the bottom GUI by altering the XML code */
     public void delPrivateSpaceButton(PrivateSpaceView psv){
     	Log.v(LOG_TAG, "Deleting a PS Button");
-        // TODO: copied form earlier code, might need some fixing
         
         LinearLayout bottomBar = (LinearLayout) findViewById(R.id.privateSpaceLinearLayout);
 		bottomBar.removeView(psv);
 		bottomBar.invalidate();
 		PrivateSpaceView.allPSIcons.remove(psv);
-		//PrivateSpaceView.privateSpaceCounter--;
-		// Tell network that you are deleting this private space TODO
-		//sendDeleteNewPrivateSpace(psv.getId()); 
     }
     
     /** YOU invited this person to the PrivateSpace, so invite them over the network, you must 
@@ -340,16 +310,7 @@ public class MainApplication extends Activity{
          * 1) Send details to network so it can update the sound sound spatialization
          */
     }
-    
-    /** When you change to a different privatespace showing up on the screen. Notify the network 
-     * so that it can update the sound spatialization */
-    public void setCurrentSpace(Space newSpace){
-        /* TODO network: 
-         * 1) notify network of the currentspace switch and adjust sound spatialization
-         */
-        current_space = newSpace;
-    }
-    
+
     /** Create the buttons (that are android widgets and put into xml)
      * These buttons will include the main, menu, and add buttons
      * Add touch listeners to the buttons */
@@ -371,11 +332,8 @@ public class MainApplication extends Activity{
 					break;
 				case MotionEvent.ACTION_UP:
 					// returns you to the main conversation
-					if(!(current_space==mainspace)){
-						Intent intent = ((MainApplication) (mainspace.context))
-						.getIntent();
-						startActivity(intent);
-						finish();
+					if(!(screen.getSpace()==mainspace)){
+						changeSpace(mainspace);
 					}
 					
 					break;
@@ -427,13 +385,13 @@ public class MainApplication extends Activity{
 					
 					/* Delete people from a private space (but only if you are the moderator) */
 					LinkedList<PersonView> deleteList= new LinkedList<PersonView>();
-					for (PersonView icon : (current_space.getSpaceView()).getAllIcons()) {
+					for (PersonView icon : screen.getAllIcons()) {
 						if (icon.getIsSelected()){
 							deleteList.add(icon);
 						}
 					}
 					for(PersonView icon: deleteList){
-						init_deletePerson(current_space, icon.getPerson());
+						init_deletePerson(screen.getSpace(), icon.getPerson());
 					}
 						
 					break;

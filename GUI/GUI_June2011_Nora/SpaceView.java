@@ -19,8 +19,8 @@ import android.util.Log;
 	private Context context;
 	public static int screenWidth=315, screenHeight=365; // the size of the spaceview (the area above the privatespace bar)
     
-	Space space; // The space that this SpaceView (screen) is representing
-    public LinkedList<PersonView> allIcons;// List of all the icons that should display on this SpaceView (screen)
+	Space space; // The space that this SpaceView (screen) is currently representing
+    public LinkedList<PersonView> allIcons= new LinkedList<PersonView>();// List of all the icons that should display on this SpaceView (screen)
     PrivateSpaceView open_preview=null; // The PrivateSpaceView (PS icon at bottom bar) whose preview is open
     
     /** Temporary variables used in the onTouchEventMethods */
@@ -39,7 +39,6 @@ import android.util.Log;
     	setFocusableInTouchMode(true);
     	Log.v(LOG_TAG, "Made SpaceView for XML file");
     	Log.v(LOG_TAG, "New allIcons attri");
-    	allIcons = new LinkedList<PersonView>();
     }
     
     /* Constructor: Create a screen for a NEW privatespace that is empty (except for you) 
@@ -52,7 +51,6 @@ import android.util.Log;
         setFocusableInTouchMode(true);
         Log.v(LOG_TAG, "Made SpaceView for a self-created space");
         Log.v(LOG_TAG, "New allIcons normal");
-        allIcons = new LinkedList<PersonView>();
      }
      
      /* Manually set the space that this SpaceView corresponds to (used in conjunction with
@@ -61,17 +59,25 @@ import android.util.Log;
     	 this.space = space;
      }
      
+     /* Change the space that this screen is representing. This also means changing the list of
+      * icons that are to be drawn */
+     public void changeSpace(Space space){
+    	 this.space = space;
+    	 allIcons = new LinkedList<PersonView>();
+    	 addManyPeople(space.getAllIcons());
+    	 invalidate();
+     }
+     
      /* Add many people to this space, add all of their icons to the SpaceView */
-     public void addManyPeople(LinkedList<Person> people){
-        for(Person p: people){
+     public void addManyPeople(LinkedList<PersonView> icons){
+        for(PersonView p: icons){
             addPerson(p);
         }
      }
    
      /* Person added to the space, therefore create a new icon (PersonView) for this person
       * and add it to this spaceview */
-     public void addPerson(Person person){
-    	PersonView icon = new PersonView(context, person, person.getImage());
+     public void addPerson(PersonView icon){
         allIcons.add(icon);    
         invalidate();
      }
@@ -204,7 +210,7 @@ import android.util.Log;
 		case MotionEvent.ACTION_UP:
 			/*
 			 * If you highlited an icon, then clicked on nothing on screen, it
-			 * should unhighlite all the other icons and unhighlight all the PrivateSpaceView icons
+			 * should unhighlite all the other icons and PrivateSpaceView icons
 			 */
 			if (selectedIcon == null && mouseY < screenHeight) {
 				for(PersonView p : allIcons){
@@ -228,6 +234,13 @@ import android.util.Log;
 					((MainApplication)context).movedPersonIcon(space, selectedIcon, mouseX, mouseY);
 				}
 				selectedIcon.setMoved(false);
+				for(PrivateSpaceView p : PrivateSpaceView.allPSIcons){
+					if(p.contains(mouseX, mouseY)){
+						//p.setSelected(false);
+						p.setHighlighted(false);
+						(p.getSpace()).addPerson(selectedIcon.getPerson());
+					}
+				}
 				// if released icon over the privatespace bar, then move icon back to original position
 				if (mouseY >= screenHeight) {
 					selectedIcon.setX(initialX);

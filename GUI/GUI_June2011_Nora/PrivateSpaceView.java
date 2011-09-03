@@ -42,6 +42,8 @@ public class PrivateSpaceView extends ImageButton{
         addThisPSView();
         initColors();
         initTouch();
+        Log.v(LOG_TAG, "1st Constructor");
+        Log.v(LOG_TAG, "space is " + space);
     }
     
     /** Constructor for XML file */
@@ -52,6 +54,7 @@ public class PrivateSpaceView extends ImageButton{
         addThisPSView();
         initColors();
         initTouch();
+        Log.v(LOG_TAG, "2nd Constructor");
     }
     
     /** Another constructor for XML file */
@@ -62,16 +65,8 @@ public class PrivateSpaceView extends ImageButton{
         addThisPSView();
         initColors();
         initTouch();
+        Log.v(LOG_TAG, "3nd Constructor");
     }
-    /*
-    public PrivateSpaceView clone(){
-    	PrivateSpace ps = this.space.clone();
-    	PrivateSpaceView psv = new PrivateSpaceView(context, ps);
-    	psv.spaceID = this.spaceID;
-    	psv.color = this.color;
-    	init2();
-    	return psv;
-    } */
     
     /** Add this PrivateSpace Icon officially to the XML and add to the static list of 
      * all PS icons */
@@ -166,14 +161,12 @@ public class PrivateSpaceView extends ImageButton{
     
     } 
      
-     /** Start a new activity for this PrivateSpace if it does not already
-      * have one, or restart it if it already has it */
-      
+     /** Open a different space to the screen */
      public void openPrivateSpace(){
-    	 if(space.getSpaceView()==null)
-    		 ((MainApplication)context).openNewPSActivity(space);
-    	 else 
-    		 ((MainApplication)context).restartPSActivity(space);
+    	 if(!space.isScreenOn()){
+    		 ((MainApplication)context).changeSpace(space);
+    		 space.setScreenOn(false);
+    	 }
      }
      
      /** Return true if this person clicked within this icon's area on the screen */
